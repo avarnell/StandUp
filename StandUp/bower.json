@@ -1,0 +1,18 @@
+{
+  "name": "StandUp",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Andrew <avarnell@ago.org>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
