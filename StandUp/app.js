@@ -63,5 +63,17 @@ app.use(function(err, req, res, next) {
   });
 });
 
+io.on('connection', function(socket){
+  console.log("connected")  
+
+  socket.on('demo', function(val){
+    console.log(val)
+
+    io.emit('demo', val)
+  })
+
+
+})
+
 
 module.exports = app;

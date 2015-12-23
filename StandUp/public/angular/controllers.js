@@ -1,10 +1,34 @@
-var standUP = angular.module('standUP', ["ngRoute"])
+var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
+
+
+.factory('mySocket',  function (socketFactory) {
+  var socket = io.connect()
+  var mySocket = socketFactory({
+    ioSocket: socket
+  });
+  return mySocket
+})
 
 .controller('homeCtrl', ["$scope", function($scope){
   $scope.working = "Giddy-up"
 }])
 
 .controller('signUpCtrl', ['$scope', function($scope){
+
+}])
+
+.controller('demoCtrl', ['$scope', 'mySocket', function($scope, mySocket){
+  $scope.posts = [];
+
+  $scope.send = function(){
+    mySocket.emit('demo', $scope.test)
+    $scope.test = ""
+  }
+  mySocket.on('demo', function(data){
+    $scope.posts.push(data)
+  })
+
+
 
 }])
 
@@ -31,9 +55,13 @@ var standUP = angular.module('standUP', ["ngRoute"])
     templateUrl: '../partials/standUP.html',
     controller: 'standUPCtrl'
   })
-  .when('moderator/:id', {
+  .when('/moderator/:id', {
     templateUrl: '../partials/moderator.html',
     controller: 'moderatorCtrl'
+  })
+  .when('/demo', {
+    templateUrl: '../partials/demo.html',
+    controller: 'demoCtrl'
   })
 
   $locationProvider.html5Mode(true);

@@ -1,0 +1,13 @@
+<script type="text/javascript" src='/javascripts/socket.min.js'></script>
+<script type="text/javascript" src='/socket.io/socket.io.js'></script>
+
+
+<h1>Socket Example</h1>
+
+<input ng-model='test'>
+<div ng-click='send()' class='btn btn-primary'> Send</div>
+
+<h2>posts</h2>
+<ul>
+<li ng-repeat='post in posts'>{{post}}</li>
+</ul>
