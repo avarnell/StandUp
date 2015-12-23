@@ -6,3 +6,12 @@ body {
 a {
   color: #00B7FF;
 }
+
+.socketInput{
+  display: inline;
+  width: 70%
+}
+
+.socketBtn{
+  display: inline-block; 
+}

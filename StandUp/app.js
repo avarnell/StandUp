@@ -64,12 +64,15 @@ app.use(function(err, req, res, next) {
 });
 
 io.on('connection', function(socket){
-  console.log("connected")  
 
-  socket.on('demo', function(val){
-    console.log(val)
-
-    io.emit('demo', val)
+  socket.on('help', function(val){
+    io.emit('help', val)
+  })
+  socket.on('interesting', function(val){
+    io.emit('interesting', val)
+  })
+  socket.on('event', function(val){
+    io.emit('event', val)
   })
 
 
