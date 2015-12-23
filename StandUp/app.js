@@ -64,18 +64,22 @@ app.use(function(err, req, res, next) {
 });
 
 io.on('connection', function(socket){
+  var currentRoom;
+
+  socket.on('join room', function(room) {
+    currentRoom = room;
+    socket.join(currentRoom);
+  })
 
   socket.on('help', function(val){
-    io.emit('help', val)
+    io.to(currentRoom).emit('help', val)
   })
   socket.on('interesting', function(val){
-    io.emit('interesting', val)
+    io.to(currentRoom).emit('interesting', val)
   })
   socket.on('event', function(val){
-    io.emit('event', val)
+    io.to(currentRoom).emit('event', val)
   })
-
-
 })
 
 

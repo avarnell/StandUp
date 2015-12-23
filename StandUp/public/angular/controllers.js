@@ -18,9 +18,15 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 }])
 
 .controller('demoCtrl', ['$scope', 'mySocket', function($scope, mySocket){
+  var room = "demo"
   $scope.helps = [];
   $scope.interestings = [];
   $scope.events = [];
+
+  mySocket.on('connect', function(){
+    mySocket.emit('join room', room)
+    
+  })
 
   $scope.addHelp = function(){
     mySocket.emit('help', $scope.newHelp)
