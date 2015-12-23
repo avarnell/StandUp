@@ -9,7 +9,14 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 
+
+var http = require('http');
 var app = express();
+app.set('port', process.env.PORT || 3000);
+var server = http.createServer(app);
+
+var io = require('socket.io').listen(server);
+server.listen(app.get('port'))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
