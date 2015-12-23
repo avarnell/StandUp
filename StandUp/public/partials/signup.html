@@ -1,0 +1,16 @@
+<div class='container'>
+  <div class='page-header'>
+    <h1>Sign-up <small>new orgainization</small></h1>
+  </div>
+  <form class='well' ng-submit='submitSignUp'>
+    <div class='form-group'>
+      <label for='orgName'> Orgainization Name</label>
+      <input type='text' name='orgName' id='orgName' ng-model='orgName'>
+    </div>
+    <div class='form-group'>
+      <label for='groupCode'> Group Code (required for joining)</label>
+      <input type='text' name='groupCode' id='groupCode' ng-model='groupCode'>
+    </div>
+    <input type='submit' class='btn btn-primary' value='Sign up'>
+  </form>
+</div>
