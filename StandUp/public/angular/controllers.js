@@ -19,10 +19,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   recognition.lang = 'en-US'
   recognition.continuous = false;
   recognition.interimResults = false;
-  
-  recognition.onresult = function (event) {
-    console.log(event.results[0][0].transcript)
-  };
 
   $scope.record = function(){
     recognition.start();
@@ -52,7 +48,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
       alert("I did not get that")
     }
 
-    $scope.$digest()
   }
   
 
