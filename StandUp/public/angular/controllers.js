@@ -1,14 +1,5 @@
 var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
-
-.factory('mySocket',  function (socketFactory) {
-  var socket = io.connect()
-  var mySocket = socketFactory({
-    ioSocket: socket
-  });
-  return mySocket
-})
-
 .controller('homeCtrl', ["$scope", function($scope){
   $scope.working = "Giddy-up"
 }])
@@ -23,7 +14,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   $scope.interestings = [];
   $scope.events = [];
 
-
+  //Speech Recognition Functionality
   var recognition = new webkitSpeechRecognition();
   recognition.lang = 'en-US'
   recognition.continuous = false;
@@ -60,8 +51,12 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
     else{
       alert("I did not get that")
     }
-  }
 
+    $scope.$digest()
+  }
+  
+
+  //Socket fucntionality
 
   mySocket.on('connect', function(){
     mySocket.emit('join room', room)

@@ -17,5 +17,8 @@ a {
 }
 
 #mic{
-  width: 3%;
+  padding-top: 40px;
+  width: 20%;
+  float: right;
 }
+
