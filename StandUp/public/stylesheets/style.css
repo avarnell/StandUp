@@ -15,3 +15,7 @@ a {
 .socketBtn{
   display: inline-block; 
 }
+
+#mic{
+  width: 3%;
+}

@@ -17,15 +17,55 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
 }])
 
-.controller('demoCtrl', ['$scope', 'mySocket', function($scope, mySocket){
+.controller('demoCtrl', ['$scope','mySocket', function($scope, mySocket){
   var room = "demo"
   $scope.helps = [];
   $scope.interestings = [];
   $scope.events = [];
 
+
+  var recognition = new webkitSpeechRecognition();
+  recognition.lang = 'en-US'
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  
+  recognition.onresult = function (event) {
+    console.log(event.results[0][0].transcript)
+  };
+
+  $scope.record = function(){
+    recognition.start();
+  }
+
+  recognition.onresult = function (event) {
+    var speech = event.results[0][0].transcript;
+    if(speech[0] == "h"){
+      speech = speech.split(" ")
+      speech.shift()
+      speech = speech.join(" ")
+      $scope.newHelp = speech
+    }
+    else if(speech[0] == "i"){
+      speech = speech.split(" ")
+      speech.shift()
+      speech = speech.join(" ")
+      $scope.newInteresting = speech
+    }
+    else if(speech[0] == "e"){
+      speech = speech.split(" ")
+      speech.shift()
+      speech = speech.join(" ")
+      $scope.newEvent = speech
+    }
+    else{
+      alert("I did not get that")
+    }
+  }
+
+
   mySocket.on('connect', function(){
     mySocket.emit('join room', room)
-    
+
   })
 
   $scope.addHelp = function(){
