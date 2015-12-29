@@ -4,7 +4,25 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   $scope.working = "Giddy-up"
 }])
 
-.controller('signUpCtrl', ['$scope', function($scope){
+.controller('signUpCtrl', ['$scope','$http','$location', function($scope, $http, $location){
+
+  $scope.submitSignUp = function(){
+    $http.post('/signup', {form : $scope.form}).then(function(){
+      $location.path('/')
+    })
+  }
+
+}])
+
+.controller('joinCtrl', ['$scope', '$http', function($scope, $http){
+
+  $scope.submitJoin = function(){
+
+  }
+
+}])
+
+.controller('createCtrl', ['$scope', '$http', function($scope, $http){
 
 }])
 

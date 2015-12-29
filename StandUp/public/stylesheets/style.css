@@ -22,3 +22,10 @@ a {
   float: right;
 }
 
+.msg-block {
+    margin-top:5px;
+}
+.msg-error {
+    color:#F00;
+    font-size:14px;
+}
