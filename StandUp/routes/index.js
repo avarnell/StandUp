@@ -18,11 +18,20 @@ router.post('/signup', function(req,res,next){
     passHash : passwordHash,
     API : signupForm.apiKey
   }).then(function(){
-    res.send("done")
+    res.json({status : "done"})
   })
-  
 })
 
+router.post('/join', function(req,res,next){
+  var joinForm = req.body.form
+
+  knex('organizations').where({
+    name: joinForm.orgName,
+    code : joinForm.password
+  }).then(function(response){
+    res.send({id: response[0].id})
+  })
+})
 
 router.get('*', function(req, res, next) {
   res.sendFile('index.html', {

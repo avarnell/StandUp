@@ -14,16 +14,25 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
 }])
 
-.controller('joinCtrl', ['$scope', '$http', function($scope, $http){
+.controller('joinCtrl', ['$scope', '$http', '$location' ,function($scope, $http, $location){
 
   $scope.submitJoin = function(){
 
+    $http.post('/join', {form : $scope.form}).then(function(response){
+      $location.path('/organization/' + response.data.id)
+      console.log(response)
+    })
   }
 
 }])
 
 .controller('createCtrl', ['$scope', '$http', function($scope, $http){
 
+}])
+
+
+.controller('orgPageCtrl', ['$scope', '$http', '$location', function($scope, $http, $location){
+  
 }])
 
 .controller('demoCtrl', ['$scope','mySocket', function($scope, mySocket){
@@ -67,7 +76,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
     }
 
   }
-  
 
   //Socket fucntionality
 
@@ -99,7 +107,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   mySocket.on('event', function(data){
     $scope.events.push(data)
   })
-
 }])
 
 .config(function ($routeProvider, $locationProvider){
@@ -120,6 +127,10 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   .when('/create', {
     templateUrl: '../partials/create.html',
     controller: 'createCtrl'
+  })
+  .when('/organization/:id', {
+    templateUrl: '../partials/orgPage.html',
+    controller: 'orgPageCtrl'
   })
   .when('/standUP/:id', {
     templateUrl: '../partials/standUP.html',
