@@ -6,8 +6,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var routes = require('./routes/index');
+var knex = require('knex')(require('./knexfile')['development'])
+
 
 
 var http = require('http');
@@ -63,15 +64,37 @@ app.use(function(err, req, res, next) {
   });
 });
 
+//demoSocket
+
+// io.on('connection', function(socket){
+//   var currentRoom;
+
+//   socket.on('join room', function(room) {
+//     currentRoom = room;
+//     socket.join(currentRoom);
+//   })
+
+//   socket.on('help', function(val){
+//     io.to(currentRoom).emit('help', val)
+//   })
+//   socket.on('interesting', function(val){
+//     io.to(currentRoom).emit('interesting', val)
+//   })
+//   socket.on('event', function(val){
+//     io.to(currentRoom).emit('event', val)
+//   })
+// })
+
 io.on('connection', function(socket){
   var currentRoom;
 
-  socket.on('join room', function(room) {
-    currentRoom = room;
-    socket.join(currentRoom);
+  socket.on('join room', function(room){
+    currentRoom = room
+    socket.join(currentRoom)
   })
 
   socket.on('help', function(val){
+  
     io.to(currentRoom).emit('help', val)
   })
   socket.on('interesting', function(val){
@@ -80,6 +103,10 @@ io.on('connection', function(socket){
   socket.on('event', function(val){
     io.to(currentRoom).emit('event', val)
   })
+
+
+
+
 })
 
 

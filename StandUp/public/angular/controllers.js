@@ -43,6 +43,50 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   }
 }])
 
+.controller('standUPCtrl', ['$scope','mySocket', '$routeParams', '$http' , function($scope, mySocket,$routeParams, $http){
+  var room = $routeParams.id
+
+
+
+  mySocket.on('connect', function(){
+    mySocket.emit('join room', room)
+    $http.get('/sync/' + room).then(function(data){
+      console.log(data)
+      $scope.orgName = data.data.name
+      $scope.helps = data.data.standup.helps
+      $scope.interestings = data.data.standup.interestings
+      $scope.events = data.data.standup.events
+
+    })
+    //socket sync
+
+  })
+
+  $scope.addHelp = function(){
+    mySocket.emit('help', $scope.newHelp)
+    $scope.newHelp = ""
+  }
+  mySocket.on('help', function(data){
+    $scope.helps.push(data)
+  })
+
+  $scope.addInteresting = function(){
+    mySocket.emit('interesting', $scope.newInteresting)
+    $scope.newInteresting = ''
+  }
+  mySocket.on('interesting', function(data){
+    $scope.interestings.push(data)
+  })
+
+  $scope.addEvent = function(){
+    mySocket.emit('event', $scope.newEvent)
+    $scope.newEvent = ""
+  }
+  mySocket.on('event', function(data){
+    $scope.events.push(data)
+  })
+}])
+
 
 .controller('orgPageCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
   

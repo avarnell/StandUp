@@ -8,10 +8,8 @@ var bcrypt = require('bcrypt')
 /* GET home page. */
 
 router.post('/signup', function(req,res,next){
-
   var passwordHash = bcrypt.hashSync( req.body.form.password, 8)
   var signupForm = req.body.form
-
   knex('organizations').insert({
     name: signupForm.orgName,
     code : signupForm.groupCode,
@@ -50,12 +48,11 @@ router.post('/create', function(req,res,next){
       if(bcrypt.compareSync(req.body.password, data[0].passHash)){
         knex('standUPs').insert({
           org_id : data[0].id,
-          standup : {helps : [], interstings: [], events: []},
+          standup : {helps : [], interestings: [], events: []},
           isActive : true
         }).returning('id').then(function(standData){
           res.json({auth : true,
             id: standData[0]
-
           })
         })
 
@@ -66,11 +63,24 @@ router.post('/create', function(req,res,next){
   })
 })
 
+router.get('/sync/:id', function(req,res,next){
+  var standup;
+  knex('standUPs').where({id : req.params.id}).then(function(data){
+    standup = data[0].standup
+    return data[0].org_id
+  }).then(function(orgid){
+    return knex('organizations').where({id: orgid})
+  }).then(function(orgName){
+    res.json({name : orgName[0].name,
+      standup : standup
+    })
+  })
+})
+
 
 
 router.post('/join', function(req,res,next){
   var joinForm = req.body.form
-
   knex('organizations').where({
     name: joinForm.orgName,
     code : joinForm.password
@@ -78,6 +88,9 @@ router.post('/join', function(req,res,next){
     res.send({id: response[0].id})
   })
 })
+
+
+
 
 router.get('*', function(req, res, next) {
   res.sendFile('index.html', {
