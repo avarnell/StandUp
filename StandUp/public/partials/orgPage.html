@@ -1,4 +1,41 @@
 <div class="container">
 
+  <div class="page-header">
+    <h1>{{orgName}}</h1>
+  </div>
 
+
+  <div class="row">
+    <h2>Active StandUPs</h2>
+    <div ng-show='noActive'>
+      <p class='text-danger'> It doesnt look like you have any active standUPs, would you like to <a href="/create">start a new one</a></p>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <td>
+            Organization Name
+          </td>
+          <td>
+            Date
+          </td>
+        </tr>
+      </thead>
+    </table>
+  </div>
+  <div class="row">
+    <h2>inActive StandUPs</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <td>
+            Organization Name
+          </td>
+          <td>
+            Date
+          </td>
+        </tr>
+      </thead>
+    </table>
+  </div>
 </div>

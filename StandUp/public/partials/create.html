@@ -6,6 +6,9 @@
   <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
       <form class='well form-horizontal' ng-submit='submitCreate()'>
+        <div ng-show='authFalse'>
+          <p class='text-danger'> The orgainization and the password do not match</p>
+        </div>
         <div class='form-group'> 
           <label for='orgName' class="col-sm-3 control-label"> Orgainization Name</label>
           <div class='col-sm-9'>
@@ -19,7 +22,7 @@
           </div>
         </div>
         <div class='form-group'>
-          <input type='sumbit' class='btn btn-primary col-sm-offset-3' value='create'>
+          <input type='submit' class='btn btn-primary col-sm-offset-3' value='create'>
         </div>
       </form>
     </div>

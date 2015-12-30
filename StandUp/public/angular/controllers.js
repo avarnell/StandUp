@@ -16,23 +16,56 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
 .controller('joinCtrl', ['$scope', '$http', '$location' ,function($scope, $http, $location){
 
-  $scope.submitJoin = function(){
 
+  $scope.submitJoin = function(){
     $http.post('/join', {form : $scope.form}).then(function(response){
       $location.path('/organization/' + response.data.id)
-      console.log(response)
+
+
+      
     })
   }
 
 }])
 
-.controller('createCtrl', ['$scope', '$http', function($scope, $http){
-
+.controller('createCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
+  $scope.submitCreate = function(){
+    $http.post('/create', {
+      password : $scope.form.password,
+      orgName : $scope.form.orgName
+    }).then(function(result){
+      if(result.data.auth){
+        $location.path('/standUP/' + result.data.id)
+      }else{
+        $scope.authFalse = true
+      }
+    })
+  }
 }])
 
 
-.controller('orgPageCtrl', ['$scope', '$http', '$location', function($scope, $http, $location){
+.controller('orgPageCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
   
+  $http.get('/orgPage/' + $routeParams.id).then(function(results){
+    console.log(results) 
+    $scope.orgName = results.data.org.name
+    $scope.activeStandUPs = []
+    $scope.inActiveStandUPs = []
+
+    results.data.standups.forEach(function(standup){
+      if(standup.isActive == true){
+        $scope.activeStandUPs.push(standup)
+      }else{
+        $scope.inActiveStandUPs.push(standup)
+      }
+    })
+
+    if($scope.activeStandUPs.length == 0){
+      $scope.noActive = true
+    }
+
+  })
+
 }])
 
 .controller('demoCtrl', ['$scope','mySocket', function($scope, mySocket){
