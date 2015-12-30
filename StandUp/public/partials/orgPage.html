@@ -21,6 +21,14 @@
           </td>
         </tr>
       </thead>
+      <tbody>
+        <tr ng-repeat='standup in activeStandUPs'>
+          <td>{{orgName}}</td>
+          <td>
+            <a href="/standUP/{{standup.id}}">{{standup.id}}</a>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
   <div class="row">

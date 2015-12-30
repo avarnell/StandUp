@@ -3,10 +3,6 @@ var router = express.Router();
 var knex = require('knex')(require('../knexfile')['development'])
 var bcrypt = require('bcrypt')
 
-
-
-/* GET home page. */
-
 router.post('/signup', function(req,res,next){
   var passwordHash = bcrypt.hashSync( req.body.form.password, 8)
   var signupForm = req.body.form
@@ -77,8 +73,6 @@ router.get('/sync/:id', function(req,res,next){
   })
 })
 
-
-
 router.post('/join', function(req,res,next){
   var joinForm = req.body.form
   knex('organizations').where({
@@ -88,9 +82,6 @@ router.post('/join', function(req,res,next){
     res.send({id: response[0].id})
   })
 })
-
-
-
 
 router.get('*', function(req, res, next) {
   res.sendFile('index.html', {

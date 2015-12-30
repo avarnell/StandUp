@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
     table.integer('org_id').notNullable().references('id').inTable('organizations').onDelete('CASCADE');
     table.json('standup').notNullable();
     table.boolean('isActive');
-    table.dateTime('started');
+    table.timestamp('created_at').defaultTo(knex.fn.now());;
   })
 };
 
