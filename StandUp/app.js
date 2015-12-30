@@ -94,19 +94,52 @@ io.on('connection', function(socket){
   })
 
   socket.on('help', function(val){
-  
-    io.to(currentRoom).emit('help', val)
+    knex('standUPs').where({
+      id: currentRoom
+    }).then(function(data){
+        var newHelp = data[0].standup
+        newHelp.helps.push(val)
+        return newHelp
+      }).then(function(newobj){
+        return knex('standUPs').where({
+          id: currentRoom
+        }).update({standup : newobj})
+      }).then(function(results){
+        io.to(currentRoom).emit('help', val)
+      })
   })
   socket.on('interesting', function(val){
-    io.to(currentRoom).emit('interesting', val)
+
+    knex('standUPs').where({
+      id: currentRoom
+    }).then(function(data){
+      var newInteresting = data[0].standup
+      newInteresting.interestings.push(val)
+      return newInteresting
+    }).then(function(newobj){
+      return knex('standUPs').where({
+        id: currentRoom
+      }).update({standup : newobj})
+    }).then(function(results){
+      io.to(currentRoom).emit('interesting', val)
+    })
   })
+
   socket.on('event', function(val){
-    io.to(currentRoom).emit('event', val)
+    knex('standUPs').where({
+      id: currentRoom
+    }).then(function(data){
+      var newEvent = data[0].standup
+      newEvent.events.push(val)
+      return newEvent
+    }).then(function(newobj){
+      return knex('standUPs').where({
+        id: currentRoom
+      }).update({standup : newobj})
+    }).then(function(results){
+      io.to(currentRoom).emit('event', val)
+    })
   })
-
-
-
-
 })
 
 
