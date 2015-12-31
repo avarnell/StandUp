@@ -4,7 +4,7 @@
   </div>
 
   <div ng-click='record()' class='col-sm-3'>
-      <img src="/images/mic.png" id='mic'>
+    <img src="/images/mic.png" id='mic'>
   </div>
 
   <div class='col-md-4'>
@@ -13,7 +13,7 @@
     <button ng-click="addHelp()" class='btn btn-primary socketBtn'>add</button>
 
     <ul>
-      <li ng-repeat='help in helps'> <h4>{{help}}</h4></li>
+      <li ng-repeat='help in helps track by $index'> <h4>{{help}}</h4></li>
     </ul>
 
   </div>  
@@ -23,7 +23,7 @@
     <button ng-click="addInteresting()" class='btn btn-primary socketBtn'>add</button>
 
     <ul>
-      <li ng-repeat='interesting in interestings'> <h4>{{interesting}}</h4></li>
+      <li ng-repeat='interesting in interestings track by $index'> <h4>{{interesting}}</h4></li>
     </ul>
 
   </div>  
@@ -33,9 +33,7 @@
     <button ng-click="addEvent()" class='btn btn-primary socketBtn'>add</button>
 
     <ul>  
-      <li ng-repeat='event in events'><h4>{{event}}</h4></li>
+      <li ng-repeat='event in events track by $index'><h4>{{event}}</h4></li>
     </ul>
   </div>
-
-
 </div>
