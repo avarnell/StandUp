@@ -61,14 +61,17 @@ router.post('/create', function(req,res,next){
 
 router.get('/sync/:id', function(req,res,next){
   var standup;
+  var isActive;
   knex('standUPs').where({id : req.params.id}).then(function(data){
     standup = data[0].standup
+    isActive = data[0].isActive
     return data[0].org_id
   }).then(function(orgid){
     return knex('organizations').where({id: orgid})
   }).then(function(orgName){
     res.json({name : orgName[0].name,
-      standup : standup
+      standup : standup,
+      isActive : isActive
     })
   })
 })
@@ -83,11 +86,19 @@ router.post('/join', function(req,res,next){
   })
 })
 
+router.post('/endStandup/:id', function(req,res,next){
+  knex('standUPs').where({id : req.params.id}).update({isActive : false}).then(function(){
+    res.json({update : true})
+  })
+})
+
 router.get('*', function(req, res, next) {
   res.sendFile('index.html', {
     root: __dirname + '/../public'
   })
 });
+
+
 
 
 module.exports = router;

@@ -3,14 +3,14 @@
     <h1>standUP <small> {{orgName}}</small></h1>
   </div>
 
-  <div ng-click='record()' class='col-sm-3'>
-    <img src="/images/mic.png" id='mic'>
+  <div class='col-sm-3'>
+    <img src="/images/mic.png" id='mic' ng-click='record()'>
   </div>
 
   <div class='col-md-4'>
     <h1 class='text-center'>helps</h1>
-    <input type='text' ng-model='newHelp' class="form-control socketInput">
-    <button ng-click="addHelp()" class='btn btn-primary socketBtn'>add</button>
+    <input type='text' ng-model='newHelp' class="form-control socketInput" ng-show='ended'>
+    <button ng-click="addHelp()" class='btn btn-primary socketBtn' ng-show='ended'>add</button>
 
     <ul>
       <li ng-repeat='help in helps track by $index'> <h4>{{help}}</h4></li>
@@ -19,8 +19,8 @@
   </div>  
   <div class='col-md-4'>
     <h1 class='text-center'>interestings</h1>
-    <input type='text' ng-model='newInteresting' class="form-control socketInput">
-    <button ng-click="addInteresting()" class='btn btn-primary socketBtn'>add</button>
+    <input type='text' ng-model='newInteresting' class="form-control socketInput" ng-show='ended'>
+    <button ng-click="addInteresting()" class='btn btn-primary socketBtn' ng-show='ended'>add</button>
 
     <ul>
       <li ng-repeat='interesting in interestings track by $index'> <h4>{{interesting}}</h4></li>
@@ -29,11 +29,16 @@
   </div>  
   <div class='col-md-4'>
     <h1 class='text-center'>events</h1>
-    <input type='text' ng-model='newEvent' class="form-control socketInput">
-    <button ng-click="addEvent()" class='btn btn-primary socketBtn'>add</button>
+    <input type='text' ng-model='newEvent' class="form-control socketInput" ng-show='ended'>
+    <button ng-click="addEvent()" class='btn btn-primary socketBtn' ng-show='ended'>add</button>
 
     <ul>  
       <li ng-repeat='event in events track by $index'><h4>{{event}}</h4></li>
     </ul>
+  </div>
+  <div class='row'>
+    <div class='col-sm-9'>
+      <div class='btn btn-primary' ng-click='endStandup()' ng-show='ended'>End standUP</div>
+    </div>
   </div>
 </div>

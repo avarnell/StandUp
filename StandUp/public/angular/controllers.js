@@ -46,9 +46,10 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 .controller('standUPCtrl', ['$scope','mySocket', '$routeParams', '$http' , function($scope, mySocket,$routeParams, $http){
   var room = $routeParams.id
 
-
+  //Socket Logic
 
   mySocket.on('connect', function(){
+    //socket sync
     mySocket.emit('join room', room)
     $http.get('/sync/' + room).then(function(data){
       console.log(data)
@@ -56,10 +57,8 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
       $scope.helps = data.data.standup.helps
       $scope.interestings = data.data.standup.interestings
       $scope.events = data.data.standup.events
-
+      $scope.ended = !data.data.isActive
     })
-    //socket sync
-
   })
 
   $scope.addHelp = function(){
@@ -85,6 +84,51 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   mySocket.on('event', function(data){
     $scope.events.push(data)
   })
+
+  $scope.endStandup = function(){
+    $http.post('endStandup/' + room).then(function(response){
+      console.log(response)
+      $scope.ended = true;
+      mySocket.emit('ended')
+    })
+  }
+  //Speech Recognition Functionality
+  var recognition = new webkitSpeechRecognition();
+  recognition.lang = 'en-US'
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  $scope.record = function(){
+    recognition.start();
+  }
+
+  recognition.onresult = function (event) {
+    var speech = event.results[0][0].transcript;
+    if(speech[0] == "h"){
+      speech = speech.split(" ")
+      speech.shift()
+      speech = speech.join(" ")
+      $scope.newHelp = speech
+    }
+    else if(speech[0] == "i"){
+      speech = speech.split(" ")
+      speech.shift()
+      speech = speech.join(" ")
+      $scope.newInteresting = speech
+    }
+    else if(speech[0] == "e"){
+      speech = speech.split(" ")
+      speech.shift()
+      speech = speech.join(" ")
+      $scope.newEvent = speech
+    }
+    else{
+      alert("I did not get that")
+    }
+
+  }
+
+
 }])
 
 

@@ -69,10 +69,16 @@ io.on('connection', function(socket){
 
   socket.on('join room', function(room){
     currentRoom = room
-    socket.join(currentRoom)
+    knex('standUPs').where({id : room}).then(function(response){
+      if(response[0].isActive){
+        socket.join(currentRoom)  
+      }
+    })
   })
 
   
+  //socket events for help, interesting and event
+
   socket.on('help', function(val){
     if(currentRoom !== 'demo'){
       knex('standUPs').where({
@@ -132,6 +138,14 @@ io.on('connection', function(socket){
     }else{
       io.to(currentRoom).emit('event', val)
     }
+  })
+
+  //disconnects all sockets when ended
+
+  socket.on('ended', function(){
+    io.sockets.sockets.forEach(function(s) {
+      s.disconnect(true);
+    });
   })
 
 })
