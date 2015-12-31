@@ -99,10 +99,17 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   recognition.interimResults = false;
 
   $scope.record = function(){
+    $scope.recording = true;
     recognition.start();
   }
 
+  recognition.onaudioend = function(){
+    $scope.recording = false;
+    $scope.$apply()
+  }
+
   recognition.onresult = function (event) {
+
     var speech = event.results[0][0].transcript;
     if(speech[0] == "h"){
       speech = speech.split(" ")
@@ -125,9 +132,9 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
     else{
       alert("I did not get that")
     }
+    $scope.$apply()
 
   }
-
 
 }])
 

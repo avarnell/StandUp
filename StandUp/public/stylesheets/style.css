@@ -22,6 +22,10 @@ a {
   float: right;
 }
 
+#endbtn{
+  margin-top: 10px;
+}
+
 .msg-block {
     margin-top:5px;
 }
@@ -29,3 +33,4 @@ a {
     color:#F00;
     font-size:14px;
 }
+

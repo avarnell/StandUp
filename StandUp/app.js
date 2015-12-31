@@ -67,11 +67,13 @@ app.use(function(err, req, res, next) {
 io.on('connection', function(socket){
   var currentRoom;
 
+  //join room if session is active
+
   socket.on('join room', function(room){
     currentRoom = room
     knex('standUPs').where({id : room}).then(function(response){
       if(response[0].isActive){
-        socket.join(currentRoom)  
+        socket.join(currentRoom)
       }
     })
   })

@@ -13,19 +13,23 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <td>
+          <th>
+            standUP id
+          </th>
+          <th>
             Organization Name
-          </td>
-          <td>
+          </th>
+          <th>
             Date
-          </td>
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat='standup in activeStandUPs'>
+          <td>{{standup.id}}</td>
           <td>{{orgName}}</td>
           <td>
-            <a href="/standUP/{{standup.id}}">{{standup.id}}</a>
+            <a href="/standUP/{{standup.id}}">{{standup.created_at}}</a>
           </td>
         </tr>
       </tbody>
@@ -36,14 +40,26 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <td>
+          <th>
+            standUP id
+          </th>
+          <th>
             Organization Name
-          </td>
-          <td>
+          </th>
+          <th>
             Date
-          </td>
+          </th>
         </tr>
       </thead>
+      <tbody>
+        <tr ng-repeat='standup in inActiveStandUPs'>
+          <td>{{standup.id}}</td>
+          <td>{{orgName}}</td>
+          <td>
+            <a href="/standUP/{{standup.id}}">{{standup.created_at}}</a></td>
+        </tr>
+
+      </tbody>
     </table>
   </div>
 </div>
