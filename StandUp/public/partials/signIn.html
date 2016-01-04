@@ -2,7 +2,9 @@
 
   <h1>Sign in with Slack</h1>
 
-  <form class="form" ng-sumbit='slackLogin()'>
+  <div ng-bind-html="repsonse"></div>
+
+  <form class="form" ng-submit='slackLogin()'>
     <div class="form-group">
       <label for='username'> Slack Username</label>
       <input type='text' name='username' id='username' ng-model='user.username' ng-required class='form-control'>
@@ -14,7 +16,6 @@
     </div>
 
     <input type='submit' class='btn btn-primary' value='login'>
-
   </form>
 
 </div>

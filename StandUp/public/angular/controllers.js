@@ -162,7 +162,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
 }])
 
-.controller('demoCtrl', ['$scope','mySocket', function($scope, mySocket){
+.controller('demoCtrl', ['$scope','mySocket',  function($scope, mySocket){
   var room = "demo"
   $scope.helps = [];
   $scope.interestings = [];
@@ -237,9 +237,17 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 }])
 
 
-.controller('signInCtrl', [ '$scope', '$http', function($scope, $http){
-
+.controller('signInCtrl', [ '$scope', '$http', '$window', function($scope, $http, $window){
+  $scope.slackLogin = function(){
+    $http.post('/login',{
+      user:$scope.user
+    }).then(function(res){
+      $window.location.href =res.data.data.request.uri.href
+    })
   
+  
+  }
+
 }])
 
 .config(function ($routeProvider, $locationProvider){
