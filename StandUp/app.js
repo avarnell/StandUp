@@ -64,6 +64,8 @@ app.use(function(err, req, res, next) {
   });
 });
 
+//sockets
+
 io.on('connection', function(socket){
   var currentRoom;
 

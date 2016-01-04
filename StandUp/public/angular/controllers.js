@@ -138,7 +138,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
 }])
 
-
 .controller('orgPageCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
   
   $http.get('/orgPage/' + $routeParams.id).then(function(results){
@@ -237,6 +236,12 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   })
 }])
 
+
+.controller('signInCtrl', [ '$scope', '$http', function($scope, $http){
+
+  
+}])
+
 .config(function ($routeProvider, $locationProvider){
   $routeProvider
 
@@ -248,6 +253,11 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
     templateUrl: '../partials/signUp.html',
     controller: 'signUpCtrl'
   })
+  .when('/signIn', {
+    templateUrl: '../partials/signIn.html',
+    controller: 'signInCtrl'
+  })
+
   .when('/join', {
     templateUrl: '../partials/join.html',
     controller: 'joinCtrl'
