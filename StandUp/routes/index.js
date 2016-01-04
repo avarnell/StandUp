@@ -3,7 +3,7 @@ var router = express.Router();
 var knex = require('knex')(require('../knexfile')['development'])
 var bcrypt = require('bcrypt')
 var request = require('request')
-var http = require('http')
+var passport = require('passport')
 
 router.post('/signup', function(req,res,next){
   var passwordHash = bcrypt.hashSync( req.body.form.password, 8)
@@ -94,15 +94,34 @@ router.post('/endStandup/:id', function(req,res,next){
   })
 })
 
-router.post('/login', function(req,res,next){
+router.post('/login', passport.authenticate('slack'), function(req, res) {
 
-  // res.redirect('https://slack.com/oauth/authorize?client_id='+process.env.SLACKID+'&scope=team%3Aread+users%3Aread&redirect_uri=http://b832a90c.ngrok.io/')
-  request('https://slack.com/oauth/authorize?client_id='+process.env.SLACKID+'&scope=team%3Aread+users%3Aread', function(err,response){
-    res.json({data: response})
-    // console.log(response.body)
-  })
-  
+});
+
+router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '/login' , 'session' : false}), function(req,res,next){
+  console.log(req.query)
+  res.redirect('/')
 })
+
+// router.get('/auth/redirect/', passport.authenticate('oauth2', { failureRedirect: '/login' }), function(req, res) {
+//   console.log(req)
+// });
+  
+
+
+// router.post('/login', function(req,res,next){
+  
+//   passport.authenticate('slack'),
+//    function(req, res) {
+//      console.log(req)
+//      res.redirect('/users/' + req.user.username);
+//    });
+
+//   // request('https://slack.com/oauth/authorize?client_id='+process.env.SLACKID+'&scope=team%3Aread+users%3Aread', function(err,response){
+//   //   res.json({data: response.data.request.uri.href})
+//   // })
+  
+// })
 
 router.get('*', function(req, res, next) {
   res.sendFile('index.html', {

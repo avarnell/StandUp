@@ -8,11 +8,28 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var knex = require('knex')(require('./knexfile')['development'])
-
-
-
+var passport = require('passport')
+var OAuth2Strategy = require('passport-oauth2').Strategy
+var SlackStrategy = require('passport-slack').Strategy
 var http = require('http');
 var app = express();
+var session = require('express-session')
+
+
+//passport config
+
+passport.use(new SlackStrategy({
+  clientID: process.env.SLACKID,
+  clientSecret: process.env.SLACKSECRET,
+  scope : 'users:read,team:read',
+  redirect_uri : '/'
+}, function(accessToken, refreshToken, profile, done) {
+  var info = {profile : profile}
+  return done(null, profile);
+}
+));
+
+
 app.set('port', process.env.PORT || 3000);
 var server = http.createServer(app);
 
@@ -30,6 +47,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
+
+
 
 app.use('/', routes);
 
@@ -63,6 +83,7 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
 
 //sockets
 

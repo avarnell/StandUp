@@ -4,7 +4,7 @@
 
   <div ng-bind-html="repsonse"></div>
 
-  <form class="form" ng-submit='slackLogin()'>
+  <form method='post' action='/login'>
     <div class="form-group">
       <label for='username'> Slack Username</label>
       <input type='text' name='username' id='username' ng-model='user.username' ng-required class='form-control'>
