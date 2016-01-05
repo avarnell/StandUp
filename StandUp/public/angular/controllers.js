@@ -1,8 +1,6 @@
 var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalStorageModule'])
 
 .controller('homeCtrl', ["$scope", function($scope){
-
-
   
 }])
 
@@ -239,6 +237,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     return localStorageService.set(key, val);
   }
 
+  $http.defaults.headers.common.Authorization = $routeParams.jwt
 
   $http({
     url: '/users/me', 
@@ -248,8 +247,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     submit('user', user )
   })
   
-
-
 }])
 
 

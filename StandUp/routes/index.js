@@ -4,6 +4,7 @@ var knex = require('knex')(require('../knexfile')['development']);
 var bcrypt = require('bcrypt');
 var passport = require('passport');
 var jwt = require('jwt-simple');
+var headerCheck = require('./headerCheck')
 
 
 router.post('/signup', function(req,res,next){
@@ -103,15 +104,10 @@ router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '
   res.redirect('/welcome?jwt='+req.user.JWT)
 })
 
-router.get('/users/me/', function(req, res,next){
-  console.log(req.query.jwt)
-  knex('slackUsers').where({
-    jwt : req.query.jwt 
-  }).then(function(user){
-    
-    console.log('user ------- ' + user)
-    res.json({data: user})
-  })
+//protected
+router.get('/users/me/', headerCheck ,function(req, res,next){
+  
+  res.json({data:req.userdata})
 })
 
 router.get('*', function(req, res, next) {
