@@ -7,6 +7,7 @@ exports.up = function(knex, Promise) {
     table.string('team_id').notNullable();
     table.string('user_id').notNullable();
     table.string('token').notNullable();
+    table.string('jwt').notNullable();
   })
 };
 

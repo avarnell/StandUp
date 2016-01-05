@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var knex = require('knex')(require('../knexfile')['development'])
-var bcrypt = require('bcrypt')
-var request = require('request')
-var passport = require('passport')
+var knex = require('knex')(require('../knexfile')['development']);
+var bcrypt = require('bcrypt');
+var passport = require('passport');
+var jwt = require('jwt-simple');
+
 
 router.post('/signup', function(req,res,next){
   var passwordHash = bcrypt.hashSync( req.body.form.password, 8)
@@ -99,8 +100,15 @@ router.get('/login', passport.authenticate('slack'), function(req, res) {
 });
 
 router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '/login' , 'session' : false}), function(req,res,next){
-  console.log(req.query)
-  res.redirect('/')
+  res.redirect('/welcome?jwt='+req.user.JWT)
+})
+
+router.get('/users/me', function(req, res,next){
+  knex('slackUsers').where({
+    jwt : req.query.JWT 
+  }).then(function(user){
+    res.json({data: user})
+  })
 })
 
 router.get('*', function(req, res, next) {

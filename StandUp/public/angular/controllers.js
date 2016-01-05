@@ -1,9 +1,9 @@
 var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
 .controller('homeCtrl', ["$scope", function($scope){
+
+
   
-  
-  $scope.working = "Giddy-up"
 }])
 
 .controller('signUpCtrl', ['$scope','$http','$location', function($scope, $http, $location){
@@ -233,10 +233,14 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   })
 }])
 
-
-.controller('signInCtrl', [ '$scope', '$http', '$window', function($scope, $http, $window){
+.controller('welcomeCtrl', ['$scope', '$routeParams', function($scope, $routeParams){
   
+  console.log($routeParams.jwt)
+
+
 }])
+
+
 
 .config(function ($routeProvider, $locationProvider){
   $routeProvider
@@ -245,13 +249,13 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
     templateUrl: '../partials/home.html',
     controller: 'homeCtrl'
   })
+  .when('/welcome', {
+    templateUrl: '../partials/welcome.html',
+    controller: 'welcomeCtrl'
+  })
   .when('/signup', {
     templateUrl: '../partials/signUp.html',
     controller: 'signUpCtrl'
-  })
-  .when('/signIn', {
-    templateUrl: '../partials/signIn.html',
-    controller: 'signInCtrl'
   })
 
   .when('/join', {

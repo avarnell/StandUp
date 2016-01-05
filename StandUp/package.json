@@ -14,6 +14,7 @@
     "express": "~4.13.1",
     "express-session": "^1.12.1",
     "jade": "~1.11.0",
+    "jwt-simple": "^0.4.0",
     "knex": "^0.9.0",
     "morgan": "~1.6.1",
     "passport": "^0.3.2",

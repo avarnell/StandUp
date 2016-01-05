@@ -9,11 +9,12 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var knex = require('knex')(require('./knexfile')['development'])
 var passport = require('passport')
-var OAuth2Strategy = require('passport-oauth2').Strategy
 var SlackStrategy = require('passport-slack').Strategy
 var http = require('http');
 var app = express();
 var session = require('express-session')
+var jwt = require('jwt-simple')
+
 
 
 
@@ -25,6 +26,15 @@ passport.use(new SlackStrategy({
   scope : 'users:read,team:read',
   redirect_uri : '/'
 }, function(accessToken, refreshToken, profile, done) {
+
+  var payload = {
+    slackToken : accessToken,
+    name : profile._json.user,
+    created : new Date()
+  },
+  secret = process.env.JWTSECRET,
+  JWToken = jwt.encode(payload, secret, 'HS512')
+
   knex('slackUsers').where({token : accessToken}).then(function(result){
     if(result.length == 0){
       return knex('slackUsers').insert({
@@ -33,13 +43,14 @@ passport.use(new SlackStrategy({
           team: profile._json.team,
           team_id: profile._json.team_id,
           user_id: profile._json.user_id,
-          token: accessToken
+          token: accessToken,
+          jwt : JWToken
         })
     }
   }).then(function(){
+    profile.JWT = JWToken;
     return done(null, profile);
   })
-  
 }
 ));
 
@@ -64,14 +75,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 
-app.get('/login', passport.authenticate('slack'), function(req, res) {
+// app.get('/login', passport.authenticate('slack'), function(req, res) {
 
-});
+// });
 
-app.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '/login' , 'session' : false}), function(req,res,next){
-  console.log(req.query)
-  res.redirect('/')
-})
+// app.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '/login' , 'session' : false}), function(req,res,next){
+//   res.redirect('/')
+// })
 
 
 app.use('/', routes);
