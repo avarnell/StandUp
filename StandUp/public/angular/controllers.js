@@ -1,6 +1,8 @@
 var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
 .controller('homeCtrl', ["$scope", function($scope){
+  
+  
   $scope.working = "Giddy-up"
 }])
 
@@ -15,14 +17,9 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 }])
 
 .controller('joinCtrl', ['$scope', '$http', '$location' ,function($scope, $http, $location){
-
-
   $scope.submitJoin = function(){
     $http.post('/join', {form : $scope.form}).then(function(response){
-      $location.path('/organization/' + response.data.id)
-
-
-      
+      $location.path('/organization/' + response.data.id)      
     })
   }
 
@@ -238,15 +235,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
 
 
 .controller('signInCtrl', [ '$scope', '$http', '$window', function($scope, $http, $window){
-  $scope.slackLogin = function(){
-    $http.post('/login',{
-      user: $scope.user
-    }).then(function(res){
-
-      console.log(res)
-    })  
-  }
-
+  
 }])
 
 .config(function ($routeProvider, $locationProvider){

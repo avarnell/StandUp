@@ -94,7 +94,7 @@ router.post('/endStandup/:id', function(req,res,next){
   })
 })
 
-router.post('/login', passport.authenticate('slack'), function(req, res) {
+router.get('/login', passport.authenticate('slack'), function(req, res) {
 
 });
 
@@ -102,26 +102,6 @@ router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '
   console.log(req.query)
   res.redirect('/')
 })
-
-// router.get('/auth/redirect/', passport.authenticate('oauth2', { failureRedirect: '/login' }), function(req, res) {
-//   console.log(req)
-// });
-  
-
-
-// router.post('/login', function(req,res,next){
-  
-//   passport.authenticate('slack'),
-//    function(req, res) {
-//      console.log(req)
-//      res.redirect('/users/' + req.user.username);
-//    });
-
-//   // request('https://slack.com/oauth/authorize?client_id='+process.env.SLACKID+'&scope=team%3Aread+users%3Aread', function(err,response){
-//   //   res.json({data: response.data.request.uri.href})
-//   // })
-  
-// })
 
 router.get('*', function(req, res, next) {
   res.sendFile('index.html', {

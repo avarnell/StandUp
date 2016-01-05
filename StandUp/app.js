@@ -16,6 +16,7 @@ var app = express();
 var session = require('express-session')
 
 
+
 //passport config
 
 passport.use(new SlackStrategy({
@@ -24,6 +25,7 @@ passport.use(new SlackStrategy({
   scope : 'users:read,team:read',
   redirect_uri : '/'
 }, function(accessToken, refreshToken, profile, done) {
+  console.log(profile)
   var info = {profile : profile}
   return done(null, profile);
 }
@@ -49,6 +51,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
+
+app.get('/login', passport.authenticate('slack'), function(req, res) {
+
+});
+
+app.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '/login' , 'session' : false}), function(req,res,next){
+  console.log(req.query)
+  res.redirect('/')
+})
 
 
 app.use('/', routes);
