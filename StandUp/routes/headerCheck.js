@@ -5,6 +5,7 @@ function headerCheck(req, res, next){
   if(!req.headers.authorization){
     return res.sendStatus(403)
   }
+  
   console.log(req.headers.authorization + " HEADER")
 
   knex('slackUsers').where({

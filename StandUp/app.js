@@ -20,20 +20,19 @@ var jwt = require('jwt-simple')
 passport.use(new SlackStrategy({
   clientID: process.env.SLACKID,
   clientSecret: process.env.SLACKSECRET,
-  scope : 'users:read,team:read',
+  scope : 'users:read,team:read,channels:read',
   redirect_uri : '/'
 }, function(accessToken, refreshToken, profile, done) {
-
+  console.log(profile. _json.info)
   var payload = {
     slackToken : accessToken,
     name : profile._json.user,
     created : new Date()
   },
   secret = process.env.JWTSECRET,
-  JWToken = jwt.encode(payload, secret, 'HS512')
+  JWToken = jwt.encode(payload, secret, 'HS512');
 
   knex('slackUsers').where({token : accessToken}).then(function(result){
-    console.log(result + " Result")
     if(result.length == 0){
       return knex('slackUsers').insert({
           name: profile._json.user ,
@@ -44,6 +43,8 @@ passport.use(new SlackStrategy({
           token: accessToken,
           jwt : JWToken
         })
+    }else{
+      return knex('slackUsers').where({token : accessToken}).update({jwt:JWToken})
     }
   }).then(function(){
     profile.JWT = JWToken;
@@ -122,21 +123,24 @@ io.on('connection', function(socket){
   var currentRoom;
 
   //join room if session is active
-
   socket.on('join room', function(room){
     currentRoom = room
-    knex('standUPs').where({id : room}).then(function(response){
-      if(response[0].isActive){
-        socket.join(currentRoom)
-      }
-    })
+     if(currentRoom != 'demo'){
+      knex('standUPs').where({id : room}).then(function(response){
+        if(response[0].isActive){
+          
+        }
+      })
+    }else{
+      socket.join(currentRoom)
+    }
   })
 
   
   //socket events for help, interesting and event
 
   socket.on('help', function(val){
-    if(currentRoom !== 'demo'){
+    if(currentRoom != 'demo'){
       knex('standUPs').where({
         id: currentRoom
       }).then(function(data){

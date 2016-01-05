@@ -1,19 +1,18 @@
 var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalStorageModule'])
 
 .controller('mainCtrl', ['$scope', 'localStorageService', function($scope, localStorageService){
+  function getItem(key) {
+    return localStorageService.get(key);
+  }
+
   $scope.notLoggedIn = true
 
-  function getItem(key) {
-   return localStorageService.get(key);
-  }
   var user = getItem('user')
-
+  console.log(user)
   if(user !== null){
     $scope.notLoggedIn = false;
     $scope.name = user.data.data[0].name;
   }
-  
-
 
 }])
 
@@ -40,19 +39,35 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
 }])
 
-.controller('createCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
-  $scope.submitCreate = function(){
-    $http.post('/create', {
-      password : $scope.form.password,
-      orgName : $scope.form.orgName
-    }).then(function(result){
-      if(result.data.auth){
-        $location.path('/standUP/' + result.data.id)
-      }else{
-        $scope.authFalse = true
+.controller('createCtrl', ['$scope', '$http', '$location', '$routeParams','localStorageService', function($scope, $http, $location, $routeParams, localStorageService){
+  function getItem(key) {
+    return localStorageService.get(key);
+  }
+  var user = getItem('user')
+  $scope.channels = []
+  var slackToken = user.data.data[0].token
+  $http.get('https://slack.com/api/channels.list?token='+slackToken ).then(function(response){
+    response.data.channels.forEach(function(channel){
+      if(channel.is_member == true){
+        $scope.channels.push({
+          channelName : channel.name,
+          channelId : channel.id
+        })
       }
     })
+    console.log($scope.channels)
+  })
+
+
+
+  $http.defaults.headers.common.Authorization = user.data.data[0].jwt
+
+  $scope.submitCreate = function(){
+    $http.post('/create', {
+      orgName : $scope.form.orgName
+    })
   }
+
 }])
 
 .controller('standUPCtrl', ['$scope','mySocket', '$routeParams', '$http' , function($scope, mySocket,$routeParams, $http){
@@ -249,13 +264,11 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 }])
 
 .controller('welcomeCtrl', ['$scope', '$routeParams', '$http', 'localStorageService', function($scope, $routeParams, $http, localStorageService){
-  
   function submit(key, val) {
     return localStorageService.set(key, val);
   }
 
   $http.defaults.headers.common.Authorization = $routeParams.jwt
-
   $http({
     url: '/users/me', 
     method: "GET",
@@ -263,9 +276,15 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   }).then(function(user){
     submit('user', user )
   })
-  
 }])
 
+.controller('logoutCtrl', ['$scope', '$location', 'localStorageService', function($scope, $location, localStorageService){
+  function removeItem(key) {
+    return localStorageService.remove(key);
+  }
+  removeItem('user')
+  $location.path('/')
+}])
 
 
 .config(function ($routeProvider, $locationProvider, localStorageServiceProvider){
@@ -309,6 +328,10 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   .when('/demo', {
     templateUrl: '../partials/demo.html',
     controller: 'demoCtrl'
+  })
+  .when('/logout', {
+    templateUrl: '../partials/loggingOut.html',
+    controller: 'logoutCtrl'
   })
 
   $locationProvider.html5Mode(true);

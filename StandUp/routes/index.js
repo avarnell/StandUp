@@ -37,30 +37,19 @@ router.get('/orgPage/:id', function(req,res,next){
     })
   })
 })
+//protected
+router.post('/create', headerCheck, function(req,res,next){
 
-router.post('/create', function(req,res,next){
-  knex('organizations').where({
-    name: req.body.orgName
-  }).then(function(data){
-    if(data.length == 0){
-      res.json({auth: false})
-    }else{
-      if(bcrypt.compareSync(req.body.password, data[0].passHash)){
-        knex('standUPs').insert({
-          org_id : data[0].id,
-          standup : {helps : [], interestings: [], events: []},
-          isActive : true
-        }).returning('id').then(function(standData){
-          res.json({auth : true,
-            id: standData[0]
-          })
-        })
-
-      }else{
-        res.json({auth: false})
-      }
-    }
+  knex('standUPs').insert({
+    org_id : data[0].id,
+    standup : {helps : [], interestings: [], events: []},
+    isActive : true
+  }).returning('id').then(function(standData){
+    res.json({auth : true,
+      id: standData[0]
+    })
   })
+  
 })
 
 router.get('/sync/:id', function(req,res,next){
@@ -106,6 +95,7 @@ router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '
 
 //protected
 router.get('/users/me/', headerCheck ,function(req, res,next){
+
   res.json({data:req.userdata})
 })
 
