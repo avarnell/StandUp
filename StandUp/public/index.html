@@ -19,7 +19,7 @@
   <base href="/">
 
 </head>
-<body>
+<body ng-controller='mainCtrl'>
   <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -29,13 +29,20 @@
       </div>
       <ul class="nav navbar-nav">
         <li><a href="/faqs">FAQs</a></li>
-        <li><a href="/signup">Sign up</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
+
+      <ul class="nav navbar-nav navbar-right" ng-show='notLoggedIn'>
         <li><a href="/login" target="_self"> Login with Slack</a> </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right" ng-hide='notLoggedIn'>
+        <li><a href="/user">{{name}}</a></li>
         <li><a href="/join">Join a Standup</a></li>
         <li><a href="/create">Create a Standup</a></li>
+        <li><a href="/logout"> logout</a></li>
       </ul>
+
+
     </div>
   </nav>
   <div ng-view>

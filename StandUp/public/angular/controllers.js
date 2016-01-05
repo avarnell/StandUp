@@ -1,5 +1,22 @@
 var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalStorageModule'])
 
+.controller('mainCtrl', ['$scope', 'localStorageService', function($scope, localStorageService){
+  $scope.notLoggedIn = true
+
+  function getItem(key) {
+   return localStorageService.get(key);
+  }
+  var user = getItem('user')
+
+  if(user !== null){
+    $scope.notLoggedIn = false;
+    $scope.name = user.data.data[0].name;
+  }
+  
+
+
+}])
+
 .controller('homeCtrl', ["$scope", function($scope){
   
 }])

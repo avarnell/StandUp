@@ -15,9 +15,6 @@ var app = express();
 var session = require('express-session')
 var jwt = require('jwt-simple')
 
-
-
-
 //passport config
 
 passport.use(new SlackStrategy({
@@ -36,6 +33,7 @@ passport.use(new SlackStrategy({
   JWToken = jwt.encode(payload, secret, 'HS512')
 
   knex('slackUsers').where({token : accessToken}).then(function(result){
+    console.log(result + " Result")
     if(result.length == 0){
       return knex('slackUsers').insert({
           name: profile._json.user ,

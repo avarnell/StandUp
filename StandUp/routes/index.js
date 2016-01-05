@@ -106,7 +106,6 @@ router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '
 
 //protected
 router.get('/users/me/', headerCheck ,function(req, res,next){
-  
   res.json({data:req.userdata})
 })
 
