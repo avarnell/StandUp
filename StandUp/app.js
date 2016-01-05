@@ -25,9 +25,21 @@ passport.use(new SlackStrategy({
   scope : 'users:read,team:read',
   redirect_uri : '/'
 }, function(accessToken, refreshToken, profile, done) {
-  console.log(profile)
-  var info = {profile : profile}
-  return done(null, profile);
+  knex('slackUsers').where({token : accessToken}).then(function(result){
+    if(result.length == 0){
+      return knex('slackUsers').insert({
+          name: profile._json.user ,
+          url: profile._json.url,
+          team: profile._json.team,
+          team_id: profile._json.team_id,
+          user_id: profile._json.user_id,
+          token: accessToken
+        })
+    }
+  }).then(function(){
+    return done(null, profile);
+  })
+  
 }
 ));
 
