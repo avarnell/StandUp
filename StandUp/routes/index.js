@@ -103,10 +103,13 @@ router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '
   res.redirect('/welcome?jwt='+req.user.JWT)
 })
 
-router.get('/users/me', function(req, res,next){
+router.get('/users/me/', function(req, res,next){
+  console.log(req.query.jwt)
   knex('slackUsers').where({
-    jwt : req.query.JWT 
+    jwt : req.query.jwt 
   }).then(function(user){
+    
+    console.log('user ------- ' + user)
     res.json({data: user})
   })
 })

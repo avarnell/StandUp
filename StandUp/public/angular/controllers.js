@@ -1,4 +1,4 @@
-var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
+var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalStorageModule'])
 
 .controller('homeCtrl', ["$scope", function($scope){
 
@@ -233,18 +233,32 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io'])
   })
 }])
 
-.controller('welcomeCtrl', ['$scope', '$routeParams', function($scope, $routeParams){
+.controller('welcomeCtrl', ['$scope', '$routeParams', '$http', 'localStorageService', function($scope, $routeParams, $http, localStorageService){
   
-  console.log($routeParams.jwt)
+  function submit(key, val) {
+    return localStorageService.set(key, val);
+  }
+
+
+  $http({
+    url: '/users/me', 
+    method: "GET",
+    params: {jwt : $routeParams.jwt }
+  }).then(function(user){
+    submit('user', user )
+  })
+  
 
 
 }])
 
 
 
-.config(function ($routeProvider, $locationProvider){
-  $routeProvider
+.config(function ($routeProvider, $locationProvider, localStorageServiceProvider){
+  localStorageServiceProvider
+    .setPrefix('standUP')
 
+  $routeProvider
   .when('/', {
     templateUrl: '../partials/home.html',
     controller: 'homeCtrl'
