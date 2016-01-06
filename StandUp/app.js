@@ -128,7 +128,7 @@ io.on('connection', function(socket){
      if(currentRoom != 'demo'){
       knex('standUPs').where({id : room}).then(function(response){
         if(response[0].isActive){
-          
+          socket.join(currentRoom)
         }
       })
     }else{
@@ -140,6 +140,7 @@ io.on('connection', function(socket){
   //socket events for help, interesting and event
 
   socket.on('help', function(val){
+    io.to(currentRoom).emit('help', val)
     if(currentRoom != 'demo'){
       knex('standUPs').where({
         id: currentRoom
@@ -151,13 +152,8 @@ io.on('connection', function(socket){
         return knex('standUPs').where({
           id: currentRoom
         }).update({standup : newobj})
-      }).then(function(results){
-        io.to(currentRoom).emit('help', val)
       })
-    }else{
-      io.to(currentRoom).emit('help', val)
     }
-
   })
 
   socket.on('interesting', function(val){

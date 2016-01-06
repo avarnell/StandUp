@@ -46,6 +46,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   var user = getItem('user')
   $scope.channels = []
   var slackToken = user.data.data[0].token
+
   $http.get('https://slack.com/api/channels.list?token='+slackToken ).then(function(response){
     response.data.channels.forEach(function(channel){
       if(channel.is_member == true){
@@ -58,13 +59,11 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   })
 
   $scope.submitCreate = function(){
-    $http.defaults.headers.common.Authorization = user.data.data[0].jwt
-    
     $http.post('/create', {
       channel : $scope.form.channel,
       name : $scope.form.name,
       user: user.data.data[0]
-    }).then(function(response){
+    }, {headers : {Authorization : user.data.data[0].jwt}}).then(function(response){
       $location.path('/standUP/' + response.data.id)
       console.log(response)
     })
@@ -78,10 +77,8 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   //Socket Logic
 
   mySocket.on('connect', function(){
-    //socket sync
     mySocket.emit('join room', room)
     $http.get('/sync/' + room).then(function(data){
-      console.log(data.data.standup)
       $scope.team = data.data.standup.team
       $scope.channel = data.data.standup.channel_name
       $scope.helps = data.data.standup.standup.helps
@@ -96,6 +93,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     $scope.newHelp = ""
   }
   mySocket.on('help', function(data){
+    console.log(data)
     $scope.helps.push(data)
   })
 
@@ -122,6 +120,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
       mySocket.emit('ended')
     })
   }
+  
   //Speech Recognition Functionality
   var recognition = new webkitSpeechRecognition();
   recognition.lang = 'en-US'
@@ -278,6 +277,8 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     params: {jwt : $routeParams.jwt }
   }).then(function(user){
     submit('user', user )
+    console.log(user.data.data[0])
+    $scope.user = user.data.data[0].name
   })
 }])
 

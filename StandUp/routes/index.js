@@ -67,6 +67,7 @@ router.get('/sync/:id', function(req,res,next){
 
 //need to rewrite
 router.post('/join', function(req,res,next){
+  //maybe get active standups for team? with channel?
   var joinForm = req.body.form
   knex('organizations').where({
     name: joinForm.orgName,
@@ -93,7 +94,6 @@ router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '
 
 //protected
 router.get('/users/me/', headerCheck ,function(req, res,next){
-
   res.json({data:req.userdata})
 })
 
