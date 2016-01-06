@@ -20,7 +20,7 @@ var jwt = require('jwt-simple')
 passport.use(new SlackStrategy({
   clientID: process.env.SLACKID,
   clientSecret: process.env.SLACKSECRET,
-  scope : 'users:read,team:read,channels:read',
+  scope : 'users:read,team:read,channels:read,chat:write:bot',
   redirect_uri : '/'
 }, function(accessToken, refreshToken, profile, done) {
   console.log(profile. _json.info)
