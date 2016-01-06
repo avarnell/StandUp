@@ -1,27 +1,50 @@
 <div class="container">
   <div class="page-header">
-    <h1>Join a standUp</h1>
+    <h1>Join a standUp with {{team}}</h1>
+  </div>
+  <div class='row'>
+    <h2>Active standUPs</h2>
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>created By</th>
+          <th>channel name</th>
+          <th>created at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat='standup in activeStandups'>
+            <td><a href="/standUP/{{standup.id}}">{{standup.createdBy}}</a></td>
+            <td>{{standup.channel_name}}</td>
+            <td>{{standup.created_at | date}}</td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+  <div class='row'>
+    <h2>Inactive standUPs</h2>
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>created By</th>
+          <th>channel name</th>
+          <th>created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat='standup in inactiveStandups'>
+            <td><a href="/standUP/{{standup.id}}">{{standup.createdBy}}</a></td>
+            <td>{{standup.channel_name}}</td>
+            <td>{{standup.created_at | date}}</td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
   </div>
 
-  <div class="row">
-    <div class="col-sm-10 col-sm-offset-1">
-      <form class='well form-horizontal' ng-submit='submitJoin()' name='join'>
-        <div class='form-group'> 
-          <label for='orgName' class="col-sm-3 control-label"> Organization Name</label>
-          <div class='col-sm-9'>
-            <input class="form-control" type='text' name='orgName' id='orgName' ng-model='form.orgName'>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for='password' class="col-sm-3 control-label"> Organization Code </label>
-          <div class='col-sm-9'>
-            <input class="form-control" type='text' name='password' id='password' ng-model='form.password'>
-          </div>
-        </div>
-        <div class='form-group'>
-          <input type='submit' class='btn btn-primary col-sm-offset-3' value='Join'>
-        </div>
-      </form>
-    </div>
-  </div>
 </div>

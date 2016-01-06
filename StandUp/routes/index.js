@@ -40,7 +40,6 @@ router.get('/orgPage/:id', function(req,res,next){
 
 //protected
 router.post('/create', headerCheck, function(req,res,next){
-  console.log(req.body)
   knex('standUPs').insert({
     createdBy: req.body.user.name,
     user_id: req.body.user.user_id,
@@ -66,14 +65,26 @@ router.get('/sync/:id', function(req,res,next){
 })
 
 //need to rewrite
-router.post('/join', function(req,res,next){
-  //maybe get active standups for team? with channel?
-  var joinForm = req.body.form
-  knex('organizations').where({
-    name: joinForm.orgName,
-    code : joinForm.password
-  }).then(function(response){
-    res.send({id: response[0].id})
+//protected
+router.post('/join', headerCheck,function(req,res,next){
+
+  knex('slackUsers').where({token:req.body.userToken}).then(function(user){
+    return knex('standUPs').where({team_id : user[0].team_id})
+  }).then(function(result){
+    var standups = []
+    result.forEach(function(standup){
+      standups.push({
+        id : standup.id,
+        createdBy: standup.createdBy,
+        team : standup.team,
+        team_id : standup.team_id,
+        channel_name : standup.channel_name,
+        channel_id: standup.channel_id,
+        isActive : standup.isActive,
+        created_at : standup.created_at
+      })
+    })
+    res.json({standups : standups})
   })
 })
 

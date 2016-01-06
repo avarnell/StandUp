@@ -34,3 +34,9 @@ a {
     font-size:14px;
 }
 
+.item {
+  border: 1px solid #2C3E50;
+  margin: 5px;
+  width: 90%;
+  padding: 10px;
+}

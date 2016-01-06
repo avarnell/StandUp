@@ -8,7 +8,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   $scope.notLoggedIn = true
 
   var user = getItem('user')
-  console.log(user)
   if(user !== null){
     $scope.notLoggedIn = false;
     $scope.name = user.data.data[0].name;
@@ -30,13 +29,29 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
 }])
 
-.controller('joinCtrl', ['$scope', '$http', '$location' ,function($scope, $http, $location){
-  $scope.submitJoin = function(){
-    $http.post('/join', {form : $scope.form}).then(function(response){
-      $location.path('/organization/' + response.data.id)      
+.controller('joinCtrl', ['$scope', '$http', '$location', 'localStorageService' ,function($scope, $http, $location, localStorageService){
+  function getItem(key) {
+    return localStorageService.get(key);
+  }
+  var user = getItem('user')
+  if(user == null){
+    $location.path('/')
+  }else{
+    $scope.team = user.data.data[0].team
+    var slackToken = user.data.data[0].token
+    var jwt = user.data.data[0].jwt
+    $http.post('/join', { userToken : slackToken},{headers: {Authorization : jwt}}).then(function(data){
+      $scope.activeStandups = []
+      $scope.inactiveStandups =[]
+      data.data.standups.forEach(function(standup){
+        if(standup.isActive == true){
+          $scope.activeStandups.push(standup)
+        }else{
+          $scope.inactiveStandups.push(standup)
+        }
+      })
     })
   }
-
 }])
 
 .controller('createCtrl', ['$scope', '$http', '$location', '$routeParams','localStorageService', function($scope, $http, $location, $routeParams, localStorageService){
@@ -44,8 +59,8 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     return localStorageService.get(key);
   }
   var user = getItem('user')
-  $scope.channels = []
   var slackToken = user.data.data[0].token
+  $scope.channels = []
 
   $http.get('https://slack.com/api/channels.list?token='+slackToken ).then(function(response){
     response.data.channels.forEach(function(channel){
@@ -65,7 +80,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
       user: user.data.data[0]
     }, {headers : {Authorization : user.data.data[0].jwt}}).then(function(response){
       $location.path('/standUP/' + response.data.id)
-      console.log(response)
     })
   }
 
@@ -76,6 +90,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   function getItem(key) {
     return localStorageService.get(key);
   }
+
   var user = getItem('user')
   var name = user.data.data[0].name
   //Socket Logic
@@ -83,7 +98,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   mySocket.on('connect', function(){
     mySocket.emit('join room', room)
     $http.get('/sync/' + room).then(function(data){
-      console.log(data)
       $scope.team = data.data.standup.team
       $scope.channel = data.data.standup.channel_name
       $scope.helps = data.data.standup.standup.helps
@@ -119,7 +133,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
   $scope.endStandup = function(){
     $http.post('endStandup/' + room).then(function(response){
-      console.log(response)
       $scope.ended = true;
       mySocket.emit('ended')
     })
@@ -166,7 +179,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
       alert("I did not get that")
     }
     $scope.$apply()
-
   }
 
 }])
@@ -290,6 +302,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     return localStorageService.remove(key);
   }
   removeItem('user')
+  $scope.notLoggedIn = true;
   $location.path('/')
 }])
 
