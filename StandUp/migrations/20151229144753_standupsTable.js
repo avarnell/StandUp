@@ -2,6 +2,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('standUPs', function(table){
     table.increments();
+    table.string('standup_name').notNullable();
     table.string('createdBy').notNullable();
     table.string('user_id').notNullable();
     table.string('team').notNullable();

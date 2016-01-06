@@ -5,21 +5,8 @@ var passport = require('passport');
 var jwt = require('jwt-simple');
 var headerCheck = require('./headerCheck')
 
-//Get rid of
-router.post('/signup', function(req,res,next){
-  var passwordHash = bcrypt.hashSync( req.body.form.password, 8)
-  var signupForm = req.body.form
-  knex('organizations').insert({
-    name: signupForm.orgName,
-    code : signupForm.groupCode,
-    passHash : passwordHash,
-    API : signupForm.apiKey
-  }).then(function(){
-    res.json({status : "done"})
-  })
-})
 
-//Modify
+//Modify, or just remove
 router.get('/orgPage/:id', function(req,res,next){
   var orgInfo;
   knex('organizations').where({
@@ -41,6 +28,7 @@ router.get('/orgPage/:id', function(req,res,next){
 //protected
 router.post('/create', headerCheck, function(req,res,next){
   knex('standUPs').insert({
+    standup_name: req.body.name,
     createdBy: req.body.user.name,
     user_id: req.body.user.user_id,
     team: req.body.user.team,
@@ -74,6 +62,7 @@ router.post('/join', headerCheck,function(req,res,next){
     var standups = []
     result.forEach(function(standup){
       standups.push({
+        name : standup.standup_name,
         id : standup.id,
         createdBy: standup.createdBy,
         team : standup.team,
