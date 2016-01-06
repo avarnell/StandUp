@@ -139,14 +139,15 @@ io.on('connection', function(socket){
   
   //socket events for help, interesting and event
 
-  socket.on('help', function(val){
-    io.to(currentRoom).emit('help', val)
+  socket.on('help', function(val, name){
+    var item = {val :val, user : name}
+    io.to(currentRoom).emit('help', item)
     if(currentRoom != 'demo'){
       knex('standUPs').where({
         id: currentRoom
       }).then(function(data){
         var newHelp = data[0].standup
-        newHelp.helps.push(val)
+        newHelp.helps.push(item)
         return newHelp
       }).then(function(newobj){
         return knex('standUPs').where({
@@ -156,48 +157,43 @@ io.on('connection', function(socket){
     }
   })
 
-  socket.on('interesting', function(val){
-    if(currentRoom !== 'demo'){
+  socket.on('interesting', function(val, name){
+    var item = {val :val, user : name}
+    io.to(currentRoom).emit('interesting', item)
+    if(currentRoom != 'demo'){
       knex('standUPs').where({
         id: currentRoom
       }).then(function(data){
-        var newInteresting = data[0].standup
-        newInteresting.interestings.push(val)
-        return newInteresting
+        var newHelp = data[0].standup
+        newHelp.interestings.push(item)
+        return newHelp
       }).then(function(newobj){
         return knex('standUPs').where({
           id: currentRoom
         }).update({standup : newobj})
-      }).then(function(results){
-        io.to(currentRoom).emit('interesting', val)
       })
-    }else{
-      io.to(currentRoom).emit('interesting', val)
     }
   })
 
-  socket.on('event', function(val){
-    if(currentRoom !== 'demo'){
+  socket.on('event', function(val, name){
+    var item = {val :val, user : name}
+    io.to(currentRoom).emit('event', item)
+    if(currentRoom != 'demo'){
       knex('standUPs').where({
         id: currentRoom
       }).then(function(data){
-        var newEvent = data[0].standup
-        newEvent.events.push(val)
-        return newEvent
+        var newHelp = data[0].standup
+        newHelp.events.push(item)
+        return newHelp
       }).then(function(newobj){
         return knex('standUPs').where({
           id: currentRoom
         }).update({standup : newobj})
-      }).then(function(results){
-        io.to(currentRoom).emit('event', val)
       })
-    }else{
-      io.to(currentRoom).emit('event', val)
     }
   })
 
   //disconnects all sockets when ended
-
   socket.on('ended', function(){
     io.sockets.sockets.forEach(function(s) {
       s.disconnect(true);

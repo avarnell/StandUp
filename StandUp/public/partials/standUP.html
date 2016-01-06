@@ -16,9 +16,8 @@
     <input type='text' ng-model='newHelp' class="form-control socketInput" ng-hide='ended'>
     <button ng-click="addHelp()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
-    <ul>
-      <li ng-repeat='help in helps track by $index'> <h4>{{help}}</h4></li>
-    </ul>
+      <div ng-repeat='help in helps track by $index'> <p>{{help.user}} says </p> <h4>{{help.val}}</h4> </div>
+    
 
   </div>  
   <div class='col-md-4'>
@@ -26,9 +25,9 @@
     <input type='text' ng-model='newInteresting' class="form-control socketInput" ng-hide='ended'>
     <button ng-click="addInteresting()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
-    <ul>
-      <li ng-repeat='interesting in interestings track by $index'> <h4>{{interesting}}</h4></li>
-    </ul>
+    
+    <div ng-repeat='interesting in interestings track by $index'> <p>{{interesting.user}} says </p> <h4>{{interesting.val}}</h4></div>
+    
 
   </div>  
   <div class='col-md-4'>
@@ -36,9 +35,8 @@
     <input type='text' ng-model='newEvent' class="form-control socketInput" ng-hide='ended'>
     <button ng-click="addEvent()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
-    <ul>  
-      <li ng-repeat='event in events track by $index'><h4>{{event}}</h4></li>
-    </ul>
+      <div ng-repeat='event in events track by $index'><p>{{event.user}} says </p> <h4>{{event.val}}</h4> </div>
+
   </div>
   <div class='row'>
     <div class='col-sm-12' id='endbtn'>

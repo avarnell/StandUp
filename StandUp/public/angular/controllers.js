@@ -71,14 +71,19 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
 }])
 
-.controller('standUPCtrl', ['$scope','mySocket', '$routeParams', '$http' , function($scope, mySocket,$routeParams, $http){
+.controller('standUPCtrl', ['$scope','mySocket', '$routeParams', '$http' , 'localStorageService', function($scope, mySocket,$routeParams, $http, localStorageService){
   var room = $routeParams.id
-
+  function getItem(key) {
+    return localStorageService.get(key);
+  }
+  var user = getItem('user')
+  var name = user.data.data[0].name
   //Socket Logic
 
   mySocket.on('connect', function(){
     mySocket.emit('join room', room)
     $http.get('/sync/' + room).then(function(data){
+      console.log(data)
       $scope.team = data.data.standup.team
       $scope.channel = data.data.standup.channel_name
       $scope.helps = data.data.standup.standup.helps
@@ -89,16 +94,15 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   })
 
   $scope.addHelp = function(){
-    mySocket.emit('help', $scope.newHelp)
+    mySocket.emit('help', $scope.newHelp, name)
     $scope.newHelp = ""
   }
   mySocket.on('help', function(data){
-    console.log(data)
     $scope.helps.push(data)
   })
 
   $scope.addInteresting = function(){
-    mySocket.emit('interesting', $scope.newInteresting)
+    mySocket.emit('interesting', $scope.newInteresting, name)
     $scope.newInteresting = ''
   }
   mySocket.on('interesting', function(data){
@@ -106,7 +110,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   })
 
   $scope.addEvent = function(){
-    mySocket.emit('event', $scope.newEvent)
+    mySocket.emit('event', $scope.newEvent, name)
     $scope.newEvent = ""
   }
   mySocket.on('event', function(data){
@@ -120,7 +124,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
       mySocket.emit('ended')
     })
   }
-  
+
   //Speech Recognition Functionality
   var recognition = new webkitSpeechRecognition();
   recognition.lang = 'en-US'
@@ -277,7 +281,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     params: {jwt : $routeParams.jwt }
   }).then(function(user){
     submit('user', user )
-    console.log(user.data.data[0])
     $scope.user = user.data.data[0].name
   })
 }])
