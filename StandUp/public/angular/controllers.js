@@ -93,6 +93,8 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
   var user = getItem('user')
   var name = user.data.data[0].name
+  var profilePic = user.data.data[0].profilePic
+  console.log(user.data.data[0])
   //Socket Logic
 
   mySocket.on('connect', function(){
@@ -108,7 +110,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   })
 
   $scope.addHelp = function(){
-    mySocket.emit('help', $scope.newHelp, name)
+    mySocket.emit('help', $scope.newHelp, name, profilePic)
     $scope.newHelp = ""
   }
   mySocket.on('help', function(data){
@@ -116,7 +118,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   })
 
   $scope.addInteresting = function(){
-    mySocket.emit('interesting', $scope.newInteresting, name)
+    mySocket.emit('interesting', $scope.newInteresting, name, profilePic)
     $scope.newInteresting = ''
   }
   mySocket.on('interesting', function(data){
@@ -124,7 +126,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   })
 
   $scope.addEvent = function(){
-    mySocket.emit('event', $scope.newEvent, name)
+    mySocket.emit('event', $scope.newEvent, name , profilePic)
     $scope.newEvent = ""
   }
   mySocket.on('event', function(data){
@@ -286,11 +288,11 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     return localStorageService.set(key, val);
   }
 
-  $http.defaults.headers.common.Authorization = $routeParams.jwt
   $http({
     url: '/users/me', 
     method: "GET",
-    params: {jwt : $routeParams.jwt }
+    params: {jwt : $routeParams.jwt},
+    headers : {Authorization : $routeParams.jwt }
   }).then(function(user){
     submit('user', user )
     $scope.user = user.data.data[0].name

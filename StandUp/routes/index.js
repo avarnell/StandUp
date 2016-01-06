@@ -6,13 +6,9 @@ var jwt = require('jwt-simple');
 var headerCheck = require('./headerCheck')
 var request = require('request')
 
-
-
-
 //protected
 router.post('/create', headerCheck, function(req,res,next){
   var channel_name = req.body.channel.channelName
-  console.log(req.body.user.token)
   knex('standUPs').insert({
     standup_name: req.body.name,
     createdBy: req.body.user.name,
@@ -26,7 +22,7 @@ router.post('/create', headerCheck, function(req,res,next){
   }).returning('id').then(function(standData){
     var joinString = 'A new startup has been created. Join ' + req.body.name + ' at http://b832a90c.ngrok.io/ and sign in!'
     request.get('https://slack.com/api/chat.postMessage?token='+ 
-      req.body.user.token + 
+      "req.body.user.token" + 
       '&channel=%23' + channel_name +
       '&text=' + joinString)
     res.json({id: standData[0]})
@@ -75,7 +71,7 @@ router.get('/login', passport.authenticate('slack'), function(req, res) {
 
 });
 
-router.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '/login' , 'session' : false}), function(req,res,next){
+router.get('/auth/redirect', passport.authenticate('slack', {failureRedirect: '/' , 'session' : false}), function(req,res,next){
   res.redirect('/welcome?jwt='+req.user.JWT)
 })
 

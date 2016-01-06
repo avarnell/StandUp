@@ -12,7 +12,6 @@ var passport = require('passport')
 var SlackStrategy = require('passport-slack').Strategy
 var http = require('http');
 var app = express();
-var session = require('express-session')
 var jwt = require('jwt-simple')
 
 //passport config
@@ -23,7 +22,6 @@ passport.use(new SlackStrategy({
   scope : 'users:read,team:read,channels:read,chat:write:bot',
   redirect_uri : '/'
 }, function(accessToken, refreshToken, profile, done) {
-  console.log(profile. _json.info)
   var payload = {
     slackToken : accessToken,
     name : profile._json.user,
@@ -31,10 +29,12 @@ passport.use(new SlackStrategy({
   },
   secret = process.env.JWTSECRET,
   JWToken = jwt.encode(payload, secret, 'HS512');
+  
 
   knex('slackUsers').where({token : accessToken}).then(function(result){
     if(result.length == 0){
       return knex('slackUsers').insert({
+          profilePic : profile._json.info.user.profile.image_32,
           name: profile._json.user ,
           url: profile._json.url,
           team: profile._json.team,
@@ -139,8 +139,8 @@ io.on('connection', function(socket){
   
   //socket events for help, interesting and event
 
-  socket.on('help', function(val, name){
-    var item = {val :val, user : name}
+  socket.on('help', function(val, name, profilePic){
+    var item = {val :val, user : name, profilePic : profilePic}
     io.to(currentRoom).emit('help', item)
     if(currentRoom != 'demo'){
       knex('standUPs').where({
@@ -157,8 +157,8 @@ io.on('connection', function(socket){
     }
   })
 
-  socket.on('interesting', function(val, name){
-    var item = {val :val, user : name}
+  socket.on('interesting', function(val, name, profilePic){
+    var item = {val :val, user : name, profilePic: profilePic}
     io.to(currentRoom).emit('interesting', item)
     if(currentRoom != 'demo'){
       knex('standUPs').where({
@@ -175,8 +175,8 @@ io.on('connection', function(socket){
     }
   })
 
-  socket.on('event', function(val, name){
-    var item = {val :val, user : name}
+  socket.on('event', function(val, name, profilePic){
+    var item = {val :val, user : name, profilePic: profilePic}
     io.to(currentRoom).emit('event', item)
     if(currentRoom != 'demo'){
       knex('standUPs').where({

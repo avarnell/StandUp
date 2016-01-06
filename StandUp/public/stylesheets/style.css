@@ -35,7 +35,7 @@ a {
 }
 
 .item {
-  border: 1px solid #2C3E50;
+  border-bottom: 1px solid black;
   margin: 5px;
   width: 90%;
   padding: 10px;

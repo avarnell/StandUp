@@ -15,16 +15,13 @@
       </thead>
       <tbody>
         <tr ng-repeat='standup in activeStandups'>
-            <td><a href="/standUP/{{standup.id}}">{{standup.nanme}}</a> </td>
+            <td><a href="/standUP/{{standup.id}}">{{standup.name}}</a> </td>
             <td>{{standup.createdBy}}</td>
             <td>{{standup.channel_name}}</td>
             <td>{{standup.created_at | date}}</td>
         </tr>
-
       </tbody>
-
     </table>
-
   </div>
   <div class='row'>
     <h2>Inactive standUPs</h2>
@@ -44,11 +41,7 @@
             <td>{{standup.channel_name}}</td>
             <td>{{standup.created_at | date}}</td>
         </tr>
-
       </tbody>
-
     </table>
-
   </div>
-
 </div>

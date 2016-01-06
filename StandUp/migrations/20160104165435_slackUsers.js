@@ -1,6 +1,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('slackUsers', function(table){
     table.increments();
+    table.string('profilePic').notNullable();
     table.string('name').notNullable();
     table.string('url').notNullable();
     table.string('team').notNullable();

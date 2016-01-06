@@ -16,7 +16,15 @@
     <input type='text' ng-model='newHelp' class="form-control socketInput" ng-hide='ended'>
     <button ng-click="addHelp()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
-      <div class='item' ng-repeat='help in helps track by $index'> <p>{{help.user}} says... </p> <h4>{{help.val}}</h4> </div>
+      <div class='item container' ng-repeat='help in helps track by $index'> 
+        <div class="col-sm-2">
+          <img ng-src="{{help.profilePic}}">
+        </div>
+        <div class="col-sm-10">
+          <p>{{help.user}} says... </p> <h4>{{help.val}}</h4> 
+        </div>
+
+      </div>
     
 
   </div>  
@@ -26,16 +34,32 @@
     <button ng-click="addInteresting()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
     
-    <div class='item' ng-repeat='interesting in interestings track by $index'> <p>{{interesting.user}} says... </p> <h4>{{interesting.val}}</h4></div>
+    <div class='item container' ng-repeat='interesting in interestings track by $index'> 
+      <div class="col-sm-2">
+        <img ng-src="{{interesting.profilePic}}">
+      </div>
+      <div class='col-sm-10'>
+        <p>{{interesting.user}} says... </p> <h4>{{interesting.val}}</h4></div>
+      </div>
     
-
   </div>  
   <div class='col-md-4'>
     <h1 class='text-center'>events</h1>
     <input type='text' ng-model='newEvent' class="form-control socketInput" ng-hide='ended'>
     <button ng-click="addEvent()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
-      <div class='item' ng-repeat='event in events track by $index'><p>{{event.user}} says... </p> <h4>{{event.val}}</h4> </div>
+
+      <div class='item container' ng-repeat='event in events track by $index'>
+        <div class="col-sm-2">
+          <img ng-src="{{event.profilePic}}">
+        </div>
+        <div class='col-sm-10'>
+          <p>{{event.user}} says... </p> <h4>{{event.val}}</h4> 
+        </div>
+
+
+
+      </div>
 
   </div>
   <div class='row'>
