@@ -1,12 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var knex = require('knex')(require('../knexfile')['development']);
-var bcrypt = require('bcrypt');
 var passport = require('passport');
 var jwt = require('jwt-simple');
 var headerCheck = require('./headerCheck')
 
-
+//Get rid of
 router.post('/signup', function(req,res,next){
   var passwordHash = bcrypt.hashSync( req.body.form.password, 8)
   var signupForm = req.body.form
@@ -20,6 +19,7 @@ router.post('/signup', function(req,res,next){
   })
 })
 
+//Modify
 router.get('/orgPage/:id', function(req,res,next){
   var orgInfo;
   knex('organizations').where({
@@ -37,38 +37,35 @@ router.get('/orgPage/:id', function(req,res,next){
     })
   })
 })
+
 //protected
 router.post('/create', headerCheck, function(req,res,next){
-
+  console.log(req.body)
   knex('standUPs').insert({
-    org_id : data[0].id,
-    standup : {helps : [], interestings: [], events: []},
-    isActive : true
+    createdBy: req.body.user.name,
+    user_id: req.body.user.user_id,
+    team: req.body.user.team,
+    team_id : req.body.user.team_id,
+    channel_name: req.body.channel.channelName,
+    channel_id: req.body.channel.channelId,
+    standup: {helps : [], interestings: [], events: []},
+    isActive: true
   }).returning('id').then(function(standData){
     res.json({auth : true,
       id: standData[0]
     })
   })
-  
 })
 
+
+//goodish
 router.get('/sync/:id', function(req,res,next){
-  var standup;
-  var isActive;
   knex('standUPs').where({id : req.params.id}).then(function(data){
-    standup = data[0].standup
-    isActive = data[0].isActive
-    return data[0].org_id
-  }).then(function(orgid){
-    return knex('organizations').where({id: orgid})
-  }).then(function(orgName){
-    res.json({name : orgName[0].name,
-      standup : standup,
-      isActive : isActive
-    })
+    res.json({standup : data[0]})
   })
 })
 
+//need to rewrite
 router.post('/join', function(req,res,next){
   var joinForm = req.body.form
   knex('organizations').where({
@@ -79,6 +76,7 @@ router.post('/join', function(req,res,next){
   })
 })
 
+//good
 router.post('/endStandup/:id', function(req,res,next){
   knex('standUPs').where({id : req.params.id}).update({isActive : false}).then(function(){
     res.json({update : true})

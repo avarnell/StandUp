@@ -10,7 +10,7 @@
         <div class='form-group'> 
           <label for='channel' class="col-sm-3 control-label"> Channel Name</label>
           <div class='col-sm-9'>
-            <select  class="form-control" ng-options='channel as channel.channelName for channel in channels' ng-model="selected"></select>
+            <select  class="form-control" ng-options='channel as channel.channelName for channel in channels' ng-model="form.channel"></select>
           </div>
         </div>
         <div class="form-group">
@@ -19,6 +19,8 @@
             <input class="form-control" type='text' name='name' id='name' ng-model='form.name'>
           </div>
         </div>
+
+      
         <div class='form-group'>
           <input type='submit' class='btn btn-primary col-sm-offset-3' value='create'>
         </div>

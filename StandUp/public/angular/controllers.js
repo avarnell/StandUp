@@ -55,16 +55,18 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
         })
       }
     })
-    console.log($scope.channels)
   })
 
-
-
-  $http.defaults.headers.common.Authorization = user.data.data[0].jwt
-
   $scope.submitCreate = function(){
+    $http.defaults.headers.common.Authorization = user.data.data[0].jwt
+    
     $http.post('/create', {
-      orgName : $scope.form.orgName
+      channel : $scope.form.channel,
+      name : $scope.form.name,
+      user: user.data.data[0]
+    }).then(function(response){
+      $location.path('/standUP/' + response.data.id)
+      console.log(response)
     })
   }
 
@@ -79,12 +81,13 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     //socket sync
     mySocket.emit('join room', room)
     $http.get('/sync/' + room).then(function(data){
-      console.log(data)
-      $scope.orgName = data.data.name
-      $scope.helps = data.data.standup.helps
-      $scope.interestings = data.data.standup.interestings
-      $scope.events = data.data.standup.events
-      $scope.ended = !data.data.isActive
+      console.log(data.data.standup)
+      $scope.team = data.data.standup.team
+      $scope.channel = data.data.standup.channel_name
+      $scope.helps = data.data.standup.standup.helps
+      $scope.interestings = data.data.standup.standup.interestings
+      $scope.events = data.data.standup.standup.events
+      $scope.ended = !data.data.standup.isActive
     })
   })
 
