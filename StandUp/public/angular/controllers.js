@@ -296,8 +296,11 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   }
   removeItem('user')
   $scope.notLoggedIn = true;
-  $location.path('/')
   $location.url('/')
+}])
+
+.controller('faqsCtrl', [function(){
+
 }])
 
 
@@ -333,6 +336,11 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   .when('/logout', {
     templateUrl: '../partials/loggingOut.html',
     controller: 'logoutCtrl'
+  })
+
+  .when('/faqs', {
+    templateUrl: '../partials/faqs.html',
+    controller: 'faqsCtrl'
   })
 
   $locationProvider.html5Mode(true);

@@ -13,9 +13,9 @@ var SlackStrategy = require('passport-slack').Strategy
 var http = require('http');
 var app = express();
 var jwt = require('jwt-simple')
+var currentRoom;
 
 //passport config
-
 passport.use(new SlackStrategy({
   clientID: process.env.SLACKID,
   clientSecret: process.env.SLACKSECRET,
@@ -74,14 +74,53 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 
-// app.get('/login', passport.authenticate('slack'), function(req, res) {
+//slash command intigration
+var slackPost = {}
+var eventType;
+app.post('/incoming', function(req,res,next){
+  knex('slackUsers')
+  .where({user_id : req.body.user_id})
+  .then(function(result){
+    if(result.length == 0){
+      res.status(403).send('Please log in with the app to contribute.')      
+    }else{
+      knex('standUPs')
+      .where({channel_id : req.body.channel_id, isActive : true })
+      .then(function(standUP){
+        if(standUP.length == 0){
+          res.status(402).send('You currently do not have an active standUP.')
+        }else{
+          currentRoom = standUP[0].id
+          var oldStandup = standUP[0].standup;
+          var inputText = req.body.text.split(" ")
+          eventType = inputText.shift()
+          eventType = eventType.toLowerCase()
 
-// });
+          inputText = inputText.join(' ')
+          slackPost.profilePic = result[0].profilePic;
+          slackPost.user = req.body.user_name;
+          slackPost.val = inputText
 
-// app.get('/auth/redirect', passport.authenticate('slack', { failureRedirect: '/login' , 'session' : false}), function(req,res,next){
-//   res.redirect('/')
-// })
-
+          if(eventType == 'help'){
+            oldStandup.helps.push(slackPost)
+          }else if(eventType == 'interesting'){
+            oldStandup.interestings.push(slackPost)
+          }else if(eventType == 'event'){
+            oldStandup.events.push(slackPost)
+          }else{
+            res.status(200).send('Please start your post with help, interesting or event')
+          }
+          return oldStandup
+        }
+      }).then(function(oldStandup){
+        return knex('standUPs').where({id : currentRoom}).update({standup : oldStandup})
+      }).then(function(){
+        io.to(currentRoom).emit(eventType, slackPost)
+        res.status(200).send('Your contribution has been added')
+      }) 
+    }
+  })
+})
 
 app.use('/', routes);
 
@@ -116,12 +155,9 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
 //sockets
 
 io.on('connection', function(socket){
-  var currentRoom;
-
   //join room if session is active
   socket.on('join room', function(room){
     currentRoom = room
@@ -135,8 +171,6 @@ io.on('connection', function(socket){
       socket.join(currentRoom)
     }
   })
-
-  
   //socket events for help, interesting and event
 
   socket.on('help', function(val, name, profilePic){

@@ -91,6 +91,7 @@ router.get('/users/me/', headerCheck ,function(req, res,next){
   res.json({data:req.userdata})
 })
 
+
 router.get('*', function(req, res, next) {
   res.sendFile('index.html', {
     root: __dirname + '/../public'
