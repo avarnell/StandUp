@@ -6,7 +6,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   }
 
   $scope.notLoggedIn = true
-
   var user = getItem('user')
   if(user !== null){
     $scope.notLoggedIn = false;
@@ -15,27 +14,30 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
 }])
 
-.controller('homeCtrl', ["$scope", function($scope){
+.controller('homeCtrl', ["$scope", 'authFailed', function($scope, authFailed){
+  $scope.failedAuth = authFailed.failed
+  authFailed.reset()
   
 }])
 
 .controller('signUpCtrl', ['$scope','$http','$location', function($scope, $http, $location){
-
   $scope.submitSignUp = function(){
     $http.post('/signup', {form : $scope.form}).then(function(){
       $location.path('/')
     })
   }
-
 }])
 
-.controller('joinCtrl', ['$scope', '$http', '$location', 'localStorageService' ,function($scope, $http, $location, localStorageService){
+.controller('joinCtrl', ['$scope', '$http', '$location', 'localStorageService', 'authFailed' ,function($scope, $http, $location, localStorageService, authFailed){
   function getItem(key) {
     return localStorageService.get(key);
   }
+
   var user = getItem('user')
   if(user == null){
+    authFailed.setauthFailed()
     $location.path('/')
+
   }else{
     $scope.team = user.data.data[0].team
     var slackToken = user.data.data[0].token
@@ -54,24 +56,33 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   }
 }])
 
-.controller('createCtrl', ['$scope', '$http', '$location', '$routeParams','localStorageService', function($scope, $http, $location, $routeParams, localStorageService){
+.controller('createCtrl', ['$scope', '$http', '$location', '$routeParams','localStorageService','authFailed', function($scope, $http, $location, $routeParams, localStorageService, authFailed){
   function getItem(key) {
     return localStorageService.get(key);
   }
   var user = getItem('user')
-  var slackToken = user.data.data[0].token
-  $scope.channels = []
 
-  $http.get('https://slack.com/api/channels.list?token='+slackToken ).then(function(response){
-    response.data.channels.forEach(function(channel){
-      if(channel.is_member == true){
-        $scope.channels.push({
-          channelName : channel.name,
-          channelId : channel.id
-        })
-      }
-    })
-  })
+  if(user == null){
+    authFailed.setauthFailed()
+    $location.path('/')
+
+  }
+  else{
+    var slackToken = user.data.data[0].token
+    $scope.channels = []
+
+    $http.get('https://slack.com/api/channels.list?token='+slackToken ).then(function(response){
+      response.data.channels.forEach(function(channel){
+        if(channel.is_member == true){
+          $scope.channels.push({
+            channelName : channel.name,
+            channelId : channel.id
+          })
+        }
+      })
+    })   
+  }
+
 
   $scope.submitCreate = function(){
     $http.post('/create', {
@@ -306,6 +317,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   removeItem('user')
   $scope.notLoggedIn = true;
   $location.path('/')
+  $location.url('/')
 }])
 
 
