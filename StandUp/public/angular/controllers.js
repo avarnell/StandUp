@@ -20,14 +20,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   
 }])
 
-.controller('signUpCtrl', ['$scope','$http','$location', function($scope, $http, $location){
-  $scope.submitSignUp = function(){
-    $http.post('/signup', {form : $scope.form}).then(function(){
-      $location.path('/')
-    })
-  }
-}])
-
 .controller('joinCtrl', ['$scope', '$http', '$location', 'localStorageService', 'authFailed' ,function($scope, $http, $location, localStorageService, authFailed){
   function getItem(key) {
     return localStorageService.get(key);
@@ -70,7 +62,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   else{
     var slackToken = user.data.data[0].token
     $scope.channels = []
-
     $http.get('https://slack.com/api/channels.list?token='+slackToken ).then(function(response){
       response.data.channels.forEach(function(channel){
         if(channel.is_member == true){
@@ -90,22 +81,34 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
       name : $scope.form.name,
       user: user.data.data[0]
     }, {headers : {Authorization : user.data.data[0].jwt}}).then(function(response){
-      $location.path('/standUP/' + response.data.id)
+      if(response.data.error){
+        $scope.errorShow = true
+        $scope.error = "/standUP/"+response.data.response[0].id
+      }else{
+        $location.path('/standUP/' + response.data.id)
+      }
+
     })
   }
 
 }])
 
-.controller('standUPCtrl', ['$scope','mySocket', '$routeParams', '$http' , 'localStorageService', function($scope, mySocket,$routeParams, $http, localStorageService){
+.controller('standUPCtrl', ['$scope','mySocket', '$routeParams', '$http' , 'localStorageService', 'authFailed', '$location', function($scope, mySocket,$routeParams, $http, localStorageService, authFailed, $location){
   var room = $routeParams.id
   function getItem(key) {
     return localStorageService.get(key);
   }
-
   var user = getItem('user')
+
+  if(user == null){
+    authFailed.setauthFailed()
+    $location.path('/')
+  }
+
+
   var name = user.data.data[0].name
   var profilePic = user.data.data[0].profilePic
-  console.log(user.data.data[0])
+
   //Socket Logic
 
   mySocket.on('connect', function(){
@@ -196,29 +199,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
 }])
 
-.controller('orgPageCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
-  
-  $http.get('/orgPage/' + $routeParams.id).then(function(results){
-    console.log(results) 
-    $scope.orgName = results.data.org.name
-    $scope.activeStandUPs = []
-    $scope.inActiveStandUPs = []
-
-    results.data.standups.forEach(function(standup){
-      if(standup.isActive == true){
-        $scope.activeStandUPs.push(standup)
-      }else{
-        $scope.inActiveStandUPs.push(standup)
-      }
-    })
-
-    if($scope.activeStandUPs.length == 0){
-      $scope.noActive = true
-    }
-
-  })
-
-}])
 
 .controller('demoCtrl', ['$scope','mySocket',  function($scope, mySocket){
   var room = "demo"
@@ -334,11 +314,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     templateUrl: '../partials/welcome.html',
     controller: 'welcomeCtrl'
   })
-  .when('/signup', {
-    templateUrl: '../partials/signUp.html',
-    controller: 'signUpCtrl'
-  })
-
   .when('/join', {
     templateUrl: '../partials/join.html',
     controller: 'joinCtrl'
@@ -347,17 +322,9 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     templateUrl: '../partials/create.html',
     controller: 'createCtrl'
   })
-  .when('/organization/:id', {
-    templateUrl: '../partials/orgPage.html',
-    controller: 'orgPageCtrl'
-  })
   .when('/standUP/:id', {
     templateUrl: '../partials/standUP.html',
     controller: 'standUPCtrl'
-  })
-  .when('/moderator/:id', {
-    templateUrl: '../partials/moderator.html',
-    controller: 'moderatorCtrl'
   })
   .when('/demo', {
     templateUrl: '../partials/demo.html',

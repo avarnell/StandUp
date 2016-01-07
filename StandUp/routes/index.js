@@ -9,24 +9,35 @@ var request = require('request')
 //protected
 router.post('/create', headerCheck, function(req,res,next){
   var channel_name = req.body.channel.channelName
-  knex('standUPs').insert({
-    standup_name: req.body.name,
-    createdBy: req.body.user.name,
-    user_id: req.body.user.user_id,
-    team: req.body.user.team,
-    team_id : req.body.user.team_id,
-    channel_name: req.body.channel.channelName,
-    channel_id: req.body.channel.channelId,
-    standup: {helps : [], interestings: [], events: []},
-    isActive: true
-  }).returning('id').then(function(standData){
-    var joinString = 'A new startup has been created. Join ' + req.body.name + ' at http://b832a90c.ngrok.io/ and sign in!'
-    request.get('https://slack.com/api/chat.postMessage?token='+ 
-      "req.body.user.token" + 
-      '&channel=%23' + channel_name +
-      '&text=' + joinString)
-    res.json({id: standData[0]})
+
+  knex('standUPs').where({
+    channel_id : req.body.channel.channelId,
+    isActive : true
+  }).then(function(response){
+    if(response.length > 0){
+      res.json({error: 'There is already an active standUP',
+      response: response})
+    }else{
+      knex('standUPs').insert({
+        standup_name: req.body.name,
+        createdBy: req.body.user.name,
+        user_id: req.body.user.user_id,
+        team: req.body.user.team,
+        team_id : req.body.user.team_id,
+        channel_name: req.body.channel.channelName,
+        channel_id: req.body.channel.channelId,
+        standup: {helps : [], interestings: [], events: []},
+        isActive: true
+      }).returning('id').then(function(standData){
+        var joinString = 'A new standUP has been created. Join ' + req.body.name + ' at http://b832a90c.ngrok.io/ and sign in!'
+        request.get('https://slack.com/api/chat.postMessage?token='+ req.body.user.token + '&channel=%23' + channel_name + '&text=' + joinString)
+        res.json({id: standData[0]})
+      })
+    }
   })
+
+
+ 
 })
 
 
