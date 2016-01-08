@@ -1,20 +1,14 @@
 var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalStorageModule'])
 
 .controller('mainCtrl', ['$scope', '$rootScope','localStorageService','loggedIn', function($scope, $rootScope,localStorageService, loggedIn){
-  
   function getItem(key) {
     return localStorageService.get(key);
   }
+
   var user = getItem('user')
-
-  $scope.$on('$routeChangeSuccess', function(){
-    //$scope.notLoggedIn = !loggedIn.status
-  })
-
   if(user !== null){
-    $scope.name = user.data.data[0].name;
+    $scope.name = user.data.data[0].name
   }
-
 }])
 
 .controller('homeCtrl', ["$scope", 'authFailed', function($scope, authFailed){
@@ -88,7 +82,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
         $scope.errorShow = true
         $scope.error = "/standUP/"+response.data.response[0].id
       }else{
-        $location.path('/standUP/' + response.data.id)
+        $location.url('/standUP/' + response.data.id)
       }
 
     })
