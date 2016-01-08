@@ -75,9 +75,9 @@ app.use(passport.initialize());
 
 
 //slash command intigration
-var slackPost = {}
-var eventType;
 app.post('/incoming', function(req,res,next){
+  var slackPost = {}
+  var eventType;
   knex('slackUsers')
   .where({user_id : req.body.user_id})
   .then(function(result){
@@ -95,7 +95,6 @@ app.post('/incoming', function(req,res,next){
           var inputText = req.body.text.split(" ")
           eventType = inputText.shift()
           eventType = eventType.toLowerCase()
-
           inputText = inputText.join(' ')
           slackPost.profilePic = result[0].profilePic;
           slackPost.user = req.body.user_name;
@@ -109,6 +108,7 @@ app.post('/incoming', function(req,res,next){
             oldStandup.events.push(slackPost)
           }else{
             res.status(200).send('Please start your post with help, interesting or event')
+            
           }
           return oldStandup
         }
@@ -172,7 +172,6 @@ io.on('connection', function(socket){
     }
   })
   //socket events for help, interesting and event
-
   socket.on('help', function(val, name, profilePic){
     var item = {val :val, user : name, profilePic : profilePic}
     io.to(currentRoom).emit('help', item)
@@ -235,6 +234,5 @@ io.on('connection', function(socket){
   })
 
 })
-
 
 module.exports = app;

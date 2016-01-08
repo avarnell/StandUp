@@ -1,14 +1,17 @@
 var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalStorageModule'])
 
-.controller('mainCtrl', ['$scope', 'localStorageService', function($scope, localStorageService){
+.controller('mainCtrl', ['$scope', '$rootScope','localStorageService','loggedIn', function($scope, $rootScope,localStorageService, loggedIn){
+  
   function getItem(key) {
     return localStorageService.get(key);
   }
-
-  $scope.notLoggedIn = true
   var user = getItem('user')
+
+  $scope.$on('$routeChangeSuccess', function(){
+    //$scope.notLoggedIn = !loggedIn.status
+  })
+
   if(user !== null){
-    $scope.notLoggedIn = false;
     $scope.name = user.data.data[0].name;
   }
 
@@ -274,10 +277,13 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   })
 }])
 
-.controller('welcomeCtrl', ['$scope', '$routeParams', '$http', 'localStorageService', function($scope, $routeParams, $http, localStorageService){
+.controller('welcomeCtrl', ['$scope','$rootScope', '$routeParams', '$http', 'localStorageService', 'loggedIn', function($scope, $rootScope,$routeParams, $http, localStorageService, loggedIn){
   function submit(key, val) {
     return localStorageService.set(key, val);
   }
+
+  $rootScope.notLoggedIn = false
+
 
   $http({
     url: '/users/me', 
@@ -286,16 +292,18 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     headers : {Authorization : $routeParams.jwt }
   }).then(function(user){
     submit('user', user )
-    $scope.user = user.data.data[0].name
+    $rootScope.name = user.data.data[0].name
   })
 }])
 
-.controller('logoutCtrl', ['$scope', '$location', 'localStorageService', function($scope, $location, localStorageService){
+.controller('logoutCtrl', ['$scope', '$rootScope', '$location', 'localStorageService', 'loggedIn', function($scope,$rootScope ,$location, localStorageService, loggedIn){
   function removeItem(key) {
     return localStorageService.remove(key);
   }
   removeItem('user')
-  $scope.notLoggedIn = true;
+  loggedIn.setLoggedInFalse()
+  $rootScope.notLoggedIn = true
+
   $location.url('/')
 }])
 
@@ -305,8 +313,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
 
 .config(function ($routeProvider, $locationProvider, localStorageServiceProvider){
-  localStorageServiceProvider
-    .setPrefix('standUP')
+  localStorageServiceProvider.setPrefix('standUP')
 
   $routeProvider
   .when('/', {
