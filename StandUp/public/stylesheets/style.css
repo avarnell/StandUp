@@ -39,4 +39,5 @@ a {
   margin: 5px;
   width: 90%;
   padding: 10px;
+  word-wrap: break-word;
 }

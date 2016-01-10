@@ -78,11 +78,16 @@ app.use(passport.initialize());
 app.post('/incoming', function(req,res,next){
   var slackPost = {}
   var eventType;
+  var firstWord = req.body.text.split(' ')[0]
+  firstWord = firstWord.toLowerCase()
+  
   knex('slackUsers')
   .where({user_id : req.body.user_id})
   .then(function(result){
     if(result.length == 0){
       res.status(403).send('Please log in with the app to contribute.')      
+    }else if(firstWord !== "help" && firstWord !== "event" && firstWord !=="interesting"){
+      res.status(400).send('Please start your request with help, interesting or event.')
     }else{
       knex('standUPs')
       .where({channel_id : req.body.channel_id, isActive : true })
