@@ -84,7 +84,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
         $scope.errorShow = true
         $scope.error = "/standUP/"+response.data.response[0].id
       }else{
-        $location.url('/standUP/' + response.data.id)
+        $location.path('/standUP/' + response.data.id)
       }
 
     })
@@ -92,7 +92,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
 }])
 
-.controller('standUPCtrl', ['$scope','mySocket', '$routeParams', '$http' , 'localStorageService', 'authFailed', '$location', function($scope, mySocket,$routeParams, $http, localStorageService, authFailed, $location){
+.controller('standUPCtrl', [ '$timeout','$scope','mySocket', '$routeParams', '$http' , 'localStorageService', 'authFailed', '$location', function($timeout, $scope, mySocket,$routeParams, $http, localStorageService, authFailed, $location){
   var room = $routeParams.id
   function getItem(key) {
     return localStorageService.get(key);
@@ -104,12 +104,13 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     $location.path('/')
   }
 
-
   var name = user.data.data[0].name
   var profilePic = user.data.data[0].profilePic
 
   //Socket Logic
 
+
+  mySocket.connect()
   mySocket.on('connect', function(){
     mySocket.emit('join room', room)
     $http.get('/sync/' + room).then(function(data){
@@ -119,6 +120,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
       $scope.interestings = data.data.standup.standup.interestings
       $scope.events = data.data.standup.standup.events
       $scope.ended = !data.data.standup.isActive
+
     })
   })
 
@@ -277,9 +279,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   function submit(key, val) {
     return localStorageService.set(key, val);
   }
-
   $rootScope.notLoggedIn = false
-
 
   $http({
     url: '/users/me', 

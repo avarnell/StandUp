@@ -42,3 +42,15 @@ a {
   word-wrap: break-word;
 }
 
+.img_small{
+  margin: 0 auto;
+  width: 80%;
+}
+
+.buttons{
+  margin-top: 30px
+}
+
+.btn-orange{
+  background: #ca7300;
+}

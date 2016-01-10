@@ -163,6 +163,7 @@ app.use(function(err, req, res, next) {
 //sockets
 
 io.on('connection', function(socket){
+  console.log('hit')
   //join room if session is active
   socket.on('join room', function(room){
     currentRoom = room
@@ -176,6 +177,7 @@ io.on('connection', function(socket){
       socket.join(currentRoom)
     }
   })
+
   //socket events for help, interesting and event
   socket.on('help', function(val, name, profilePic){
     var item = {val :val, user : name, profilePic : profilePic}

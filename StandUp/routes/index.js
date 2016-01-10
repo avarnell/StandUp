@@ -9,7 +9,6 @@ var request = require('request')
 //protected
 router.post('/create', headerCheck, function(req,res,next){
   var channel_name = req.body.channel.channelName
-
   knex('standUPs').where({
     channel_id : req.body.channel.channelId,
     isActive : true
@@ -35,9 +34,6 @@ router.post('/create', headerCheck, function(req,res,next){
       })
     }
   })
-
-
- 
 })
 
 
