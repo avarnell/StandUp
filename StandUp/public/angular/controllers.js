@@ -9,6 +9,9 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   if(user !== null){
     $scope.name = user.data.data[0].name
   }
+  else{
+    $rootScope.notLoggedIn = $scope.notLoggedIn || true
+  }
 }])
 
 .controller('homeCtrl', ["$scope", 'authFailed', function($scope, authFailed){
@@ -26,7 +29,6 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   if(user == null){
     authFailed.setauthFailed()
     $location.path('/')
-
   }else{
     $scope.team = user.data.data[0].team
     var slackToken = user.data.data[0].token
@@ -295,9 +297,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     return localStorageService.remove(key);
   }
   removeItem('user')
-  loggedIn.setLoggedInFalse()
   $rootScope.notLoggedIn = true
-
   $location.url('/')
 }])
 
