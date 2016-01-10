@@ -108,8 +108,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   var profilePic = user.data.data[0].profilePic
 
   //Socket Logic
-
-
+  
   mySocket.connect()
   mySocket.on('connect', function(){
     mySocket.emit('join room', room)

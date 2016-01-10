@@ -86,7 +86,7 @@ app.post('/incoming', function(req,res,next){
   .then(function(result){
     if(result.length == 0){
       res.status(403).send('Please log in with the app to contribute.')      
-    }else if(firstWord !== "help" && firstWord !== "event" && firstWord !=="interesting"){
+    }else if(firstWord !== "help" && firstWord !== "event" && firstWord !== "interesting"){
       res.status(400).send('Please start your request with help, interesting or event.')
     }else{
       knex('standUPs')
@@ -163,7 +163,6 @@ app.use(function(err, req, res, next) {
 //sockets
 
 io.on('connection', function(socket){
-  console.log('hit')
   //join room if session is active
   socket.on('join room', function(room){
     currentRoom = room
