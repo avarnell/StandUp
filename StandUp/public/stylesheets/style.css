@@ -35,18 +35,21 @@ a {
 }
 
 .item {
- /* margin: 5px;
+/*  margin: 5px;
   width: 90%;
   padding: 10px;*/
-  margin-top: 5px;
+  border: 1px solid lightgray;
+  border-radius: 3px;
   padding: 10px;
+  margin: 5px;
   width: 90%;
   word-wrap: break-word;
-  -webkit-box-shadow: 10px 10px 5px -5px rgba(0,0,0,0.18);
-  -moz-box-shadow: 10px 10px 5px -5px rgba(0,0,0,0.18);
-  box-shadow: 10px 10px 5px -5px rgba(0,0,0,0.18);
-}
 
+  
+/*  -webkit-box-shadow: -11px -9px 42px -5px rgba(0,0,0,0.5);
+  -moz-box-shadow: -11px -9px 42px -5px rgba(0,0,0,0.5);
+  box-shadow: -11px -9px 42px -5px rgba(0,0,0,0.5);*/
+}
 
 
 
