@@ -179,7 +179,10 @@ io.on('connection', function(socket){
 
   //socket events for help, interesting and event
   socket.on('help', function(val, name, profilePic){
-    var item = {val :val, user : name, profilePic : profilePic}
+    var text = val.split('||')[0]
+    var link = val.split('||')[1]
+    var item = {val :val, user : name, profilePic: profilePic, link : link, text : text}
+
     io.to(currentRoom).emit('help', item)
     if(currentRoom != 'demo'){
       knex('standUPs').where({
@@ -197,7 +200,10 @@ io.on('connection', function(socket){
   })
 
   socket.on('interesting', function(val, name, profilePic){
-    var item = {val :val, user : name, profilePic: profilePic}
+    var text = val.split('||')[0]
+    var link = val.split('||')[1]
+    var item = {val :val, user : name, profilePic: profilePic, link : link, text : text}
+
     io.to(currentRoom).emit('interesting', item)
     if(currentRoom != 'demo'){
       knex('standUPs').where({
@@ -215,7 +221,10 @@ io.on('connection', function(socket){
   })
 
   socket.on('event', function(val, name, profilePic){
-    var item = {val :val, user : name, profilePic: profilePic}
+    var text = val.split('||')[0]
+    var link = val.split('||')[1]
+    var item = {val :val, user : name, profilePic: profilePic, link : link, text : text}
+
     io.to(currentRoom).emit('event', item)
     if(currentRoom != 'demo'){
       knex('standUPs').where({

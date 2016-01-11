@@ -1,4 +1,4 @@
-var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalStorageModule'])
+var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io', 'LocalStorageModule'])
 
 .controller('mainCtrl', ['$scope', '$rootScope','localStorageService','loggedIn', function($scope, $rootScope,localStorageService, loggedIn){
   function getItem(key) {
@@ -20,7 +20,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   
 }])
 
-.controller('joinCtrl', ['$scope', '$http', '$location', 'localStorageService', 'authFailed' ,function($scope, $http, $location, localStorageService, authFailed){
+.controller('joinCtrl', ['$scope', '$http', '$location', 'localStorageService', 'authFailed', function($scope, $http, $location, localStorageService, authFailed){
   function getItem(key) {
     return localStorageService.get(key);
   }
@@ -33,7 +33,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     $scope.team = user.data.data[0].team
     var slackToken = user.data.data[0].token
     var jwt = user.data.data[0].jwt
-    $http.post('/join', { userToken : slackToken},{headers: {Authorization : jwt}}).then(function(data){
+    $http.post('/join', { userToken : slackToken}, {headers: {Authorization : jwt}}).then(function(data){
       $scope.activeStandups = []
       $scope.inactiveStandups =[]
       data.data.standups.forEach(function(standup){
@@ -56,8 +56,8 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   if(user == null){
     authFailed.setauthFailed()
     $location.path('/')
-
   }
+
   else{
     var slackToken = user.data.data[0].token
     $scope.channels = []
@@ -108,7 +108,7 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
   var profilePic = user.data.data[0].profilePic
 
   //Socket Logic
-  
+
   mySocket.connect()
   mySocket.on('connect', function(){
     mySocket.emit('join room', room)
@@ -304,6 +304,42 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
 
 }])
 
+.controller('dataCtrl', ['$scope', '$http', '$routeParams', 'localStorageService', 'authFailed' , '$location',  function($scope, $http, $routeParams, localStorageService, authFailed, $location){
+  
+  function getItem(key) {
+    return localStorageService.get(key);
+  }
+  var user = getItem('user')
+  if(user === null){
+    authFailed.setauthFailed()
+    $location.path('/')
+  }
+  else if(user.data.data[0].team_id !== $routeParams.team){
+    authFailed.setauthFailed()
+    $location.path('/')
+  }
+
+  var jwt = user.data.data[0].jwt
+
+  $http({
+    url: '/getData', 
+    method: "GET",
+    params: {team_id: $routeParams.team,
+      channelId : $routeParams.channel
+    },
+    headers : {Authorization : jwt}
+  }).then(function(response){
+    console.log(response.data)
+    $scope.channelName = response.data.channelName
+    $scope.labels = response.data.names
+    $scope.series = ['Helps', 'Interestings', 'Events'] 
+    $scope.data = [response.data.helpsCount, response.data.interestingsCount, response.data.eventsCount]
+    $scope.onClick = function (points, evt) {
+      console.log(points, evt);
+    };
+  })
+}])
+
 
 .config(function ($routeProvider, $locationProvider, localStorageServiceProvider){
   localStorageServiceProvider.setPrefix('standUP')
@@ -337,7 +373,10 @@ var standUP = angular.module('standUP', ["ngRoute", 'btford.socket-io', 'LocalSt
     templateUrl: '../partials/loggingOut.html',
     controller: 'logoutCtrl'
   })
-
+  .when('/data/:team/:channel', {
+    templateUrl: '../partials/data.html',
+    controller: 'dataCtrl'
+  })
   .when('/faqs', {
     templateUrl: '../partials/faqs.html',
     controller: 'faqsCtrl'

@@ -23,7 +23,7 @@
         <tr ng-repeat='standup in activeStandups'>
             <td><a href="/standUP/{{standup.id}}">{{standup.name}}</a> </td>
             <td>{{standup.createdBy}}</td>
-            <td>{{standup.channel_name}}</td>
+            <td><a href="/data/{{standup.team_id}}/{{standup.channel_id}}">{{standup.channel_name}}</a> </td>
             <td>{{standup.created_at | date}}</td>
         </tr>
       </tbody>
@@ -44,7 +44,7 @@
         <tr ng-repeat='standup in inactiveStandups'>
             <td><a href="/standUP/{{standup.id}}">{{standup.name}}</a> </td>
             <td>{{standup.createdBy}}</td>
-            <td>{{standup.channel_name}}</td>
+            <td><a href="/data/{{standup.team_id}}/{{standup.channel_id}}">{{standup.channel_name}}</a> </td>
             <td>{{standup.created_at | date}}</td>
         </tr>
       </tbody>

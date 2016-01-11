@@ -67,7 +67,7 @@ router.post('/join', headerCheck,function(req,res,next){
   })
 })
 
-//good
+
 router.post('/endStandup/:id', function(req,res,next){
   knex('standUPs').where({id : req.params.id}).update({isActive : false}).then(function(){
     res.json({update : true})
@@ -85,6 +85,38 @@ router.get('/auth/redirect', passport.authenticate('slack', {failureRedirect: '/
 //protected
 router.get('/users/me/', headerCheck ,function(req, res,next){
   res.json({data:req.userdata})
+})
+
+//protected
+router.get('/getData', headerCheck, function(req,res,next){
+  knex('standUPs').where({
+    channel_id: req.query.channelId
+  }).then(function(results){
+
+    var helpsCount = [],
+    interestingsCount = [],
+    eventsCount = [],
+    names = [],
+    contributors = [], 
+    ids = [],
+    channel_name = results[0].channel_name
+
+    results.forEach(function(standup){
+      ids.push(standup.id)
+      names.push(standup.standup_name)
+      helpsCount.push(standup.standup.helps.length)
+      interestingsCount.push(standup.standup.interestings.length)
+      eventsCount.push(standup.standup.events.length)
+    })
+    res.json({helpsCount : helpsCount,
+      interestingsCount : interestingsCount,
+      eventsCount : eventsCount,
+      names : names,
+      channelName : channel_name,
+      contributors : contributors,
+      ids : ids
+    })
+  })
 })
 
 

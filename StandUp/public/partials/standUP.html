@@ -13,7 +13,7 @@
 
   <div class='col-md-4'>
     <h1 class='text-center'>helps</h1>
-    <input type='text' ng-model='newHelp' class="form-control socketInput" ng-hide='ended'>
+    <input type='text' ng-model='newHelp' class="form-control socketInput" ng-hide='ended' placeholder='help || link'>
     <button ng-click="addHelp()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
       <div class='item container bounceInDown animated' ng-repeat='help in helps track by $index'> 
@@ -22,17 +22,16 @@
             <img ng-src="{{help.profilePic}}">
           </div>
           <div class="col-sm-10">
-            <p>{{help.user}} says... <h4>{{help.val}}</h4> </p>
+            <p>{{help.user}} says... <a ng-href="{{help.link}}"> <h4>{{help.text}}</h4> </a>  </p>
           </div>
         </div>
-
       </div>
     
 
   </div>  
   <div class='col-md-4'>
     <h1 class='text-center'>interestings</h1>
-    <input type='text' ng-model='newInteresting' class="form-control socketInput" ng-hide='ended'>
+    <input type='text' ng-model='newInteresting' class="form-control socketInput" ng-hide='ended' placeholder='interesting || link'>
     <button ng-click="addInteresting()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
     <div class='item container bounceInDown animated' ng-repeat='interesting in interestings track by $index'> 
@@ -40,13 +39,13 @@
         <img ng-src="{{interesting.profilePic}}">
       </div>
       <div class='col-sm-10'>
-        <p>{{interesting.user}} says... </p> <h4>{{interesting.val}}</h4></div>
+        <p>{{interesting.user}} says... </p> <a ng-href="{{interesting.link}}"><h4>{{interesting.text}}</h4></a> </div>
       </div>
     
   </div>  
   <div class='col-md-4'>
     <h1 class='text-center'>events</h1>
-    <input type='text' ng-model='newEvent' class="form-control socketInput" ng-hide='ended'>
+    <input type='text' ng-model='newEvent' class="form-control socketInput" ng-hide='ended' placeholder='event || link'>
     <button ng-click="addEvent()" class='btn btn-primary socketBtn' ng-hide='ended'>add</button>
 
       <div class='item container bounceInDown animated' ng-repeat='event in events track by $index'>
@@ -54,7 +53,7 @@
           <img ng-src="{{event.profilePic}}">
         </div>
         <div class='col-sm-10'>
-          <p>{{event.user}} says... </p> <h4>{{event.val}}</h4> 
+          <p>{{event.user}} says... </p>  <a ng-href="{{event.link}}"> <h4>{{event.text}}</h4> </a> 
         </div>
 
 

@@ -16,6 +16,8 @@
     "tests"
   ],
   "dependencies": {
-    "angular-local-storage": "~0.2.3"
+    "angular-local-storage": "~0.2.3",
+    "angular-chart.js": "~0.8.8",
+    "Chart.js": "~1.0.2"
   }
 }
