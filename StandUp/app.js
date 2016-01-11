@@ -104,6 +104,8 @@ app.post('/incoming', function(req,res,next){
           slackPost.profilePic = result[0].profilePic;
           slackPost.user = req.body.user_name;
           slackPost.val = inputText
+          slackPost.text =inputText.split("||")[0]
+          slackPost.link = inputText.split('||')[1]
 
           if(eventType == 'help'){
             oldStandup.helps.push(slackPost)
