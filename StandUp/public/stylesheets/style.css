@@ -44,7 +44,7 @@ a {
   margin: 5px;
   width: 90%;
   word-wrap: break-word;
-
+  -webkit-animation-duration: 500s;
   
 /*  -webkit-box-shadow: -11px -9px 42px -5px rgba(0,0,0,0.5);
   -moz-box-shadow: -11px -9px 42px -5px rgba(0,0,0,0.5);
@@ -67,7 +67,7 @@ a {
 }
 
 .frontimg{
-max-width:100%;
-max-height:100%;
+max-width:70%;
+max-height:70%;
 
 }

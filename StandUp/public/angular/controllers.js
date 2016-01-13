@@ -318,7 +318,7 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
     authFailed.setauthFailed()
     $location.path('/')
   }
-
+  Chart.defaults.global.ids = []
   var jwt = user.data.data[0].jwt
 
   $http({
