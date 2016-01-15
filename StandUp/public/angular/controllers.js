@@ -108,9 +108,10 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
   var profilePic = user.data.data[0].profilePic
 
   //Socket Logic
+  console.log(mySocket) 
 
   mySocket.connect()
-  mySocket.on('connect', function(){
+  // mySocket.on('connect', function(){
     mySocket.emit('join room', room)
     $http.get('/sync/' + room).then(function(data){
       $scope.team = data.data.standup.team
@@ -121,8 +122,7 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
       $scope.ended = !data.data.standup.isActive
 
     })
-  })
-
+  // })
   $scope.addHelp = function(){
     mySocket.emit('help', $scope.newHelp, name, profilePic)
     $scope.newHelp = ""
@@ -154,6 +154,7 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
     })
   }
 
+
   //Speech Recognition Functionality
   var recognition = new webkitSpeechRecognition();
   recognition.lang = 'en-US'
@@ -171,7 +172,6 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
   }
 
   recognition.onresult = function (event) {
-
     var speech = event.results[0][0].transcript;
     if(speech[0] == "h"){
       speech = speech.split(" ")
