@@ -2,14 +2,22 @@
   <div class="page-header col-sm-9">
     <h1>{{team}} <small>{{channel}} </small></h1>
   </div>
-
-  <div class='col-sm-3' ng-show='recording'>
-    <img src="/images/mic_recording.png" id='mic'>
+  <div ng-show='audioEnabled'>
+    <div class='col-sm-3' ng-show='recording'>
+      <img src="/images/mic_recording.png" id='mic'>
+    </div>
+    <div class='col-sm-3' ng-hide='recording'>
+      <img src="/images/mic.png" id='mic' ng-click='record()' ng-hide='ended'>
+    </div>
+  </div>
+  <div ng-hide='audioEnabled'>
+    <div class='col-sm-3'>
+      <img src="/images/s.png" id='mic'>
+    </div>
   </div>
 
-  <div class='col-sm-3' ng-hide='recording'>
-    <img src="/images/mic.png" id='mic' ng-click='record()' ng-hide='ended'>
-  </div>
+
+  <div class="col-sm-3"></div>
 
   <div class='col-md-4'>
     <h1 class='text-center'>helps</h1>

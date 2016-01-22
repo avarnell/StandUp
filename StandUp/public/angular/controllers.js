@@ -51,6 +51,7 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
   function getItem(key) {
     return localStorageService.get(key);
   }
+  $scope.audioEnabled = true
   var user = getItem('user')
 
   if(user == null){
@@ -108,8 +109,6 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
   var profilePic = user.data.data[0].profilePic
 
   //Socket Logic
-  console.log(mySocket) 
-
   mySocket.connect()
   // mySocket.on('connect', function(){
     mySocket.emit('join room', room)
@@ -156,45 +155,50 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
 
 
   //Speech Recognition Functionality
-  var recognition = new webkitSpeechRecognition();
-  recognition.lang = 'en-US'
-  recognition.continuous = false;
-  recognition.interimResults = false;
+  if(!('webkitSpeechRecognition' in window)){
+    alert("speech recognition is disabled for this browser, please use chrome if you would like to use this feature");
+    $scope.audioEnabled = false
+  }else{
+    var recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US'
+    recognition.continuous = false;
+    recognition.interimResults = false;
 
-  $scope.record = function(){
-    $scope.recording = true;
-    recognition.start();
-  }
+    $scope.record = function(){
+      $scope.recording = true;
+      recognition.start();
+    }
 
-  recognition.onaudioend = function(){
-    $scope.recording = false;
-    $scope.$apply()
-  }
+    recognition.onaudioend = function(){
+      $scope.recording = false;
+      $scope.$apply()
+    }
 
-  recognition.onresult = function (event) {
-    var speech = event.results[0][0].transcript;
-    if(speech[0] == "h"){
-      speech = speech.split(" ")
-      speech.shift()
-      speech = speech.join(" ")
-      $scope.newHelp = speech
+    recognition.onresult = function (event) {
+      var speech = event.results[0][0].transcript;
+      if(speech[0] == "h"){
+        speech = speech.split(" ")
+        speech.shift()
+        speech = speech.join(" ")
+        $scope.newHelp = speech
+      }
+      else if(speech[0] == "i"){
+        speech = speech.split(" ")
+        speech.shift()
+        speech = speech.join(" ")
+        $scope.newInteresting = speech
+      }
+      else if(speech[0] == "e"){
+        speech = speech.split(" ")
+        speech.shift()
+        speech = speech.join(" ")
+        $scope.newEvent = speech
+      }
+      else{
+        alert("I did not get that")
+      }
+      $scope.$apply()
     }
-    else if(speech[0] == "i"){
-      speech = speech.split(" ")
-      speech.shift()
-      speech = speech.join(" ")
-      $scope.newInteresting = speech
-    }
-    else if(speech[0] == "e"){
-      speech = speech.split(" ")
-      speech.shift()
-      speech = speech.join(" ")
-      $scope.newEvent = speech
-    }
-    else{
-      alert("I did not get that")
-    }
-    $scope.$apply()
   }
 
 }])
@@ -207,39 +211,46 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
   $scope.events = [];
 
   //Speech Recognition Functionality
-  var recognition = new webkitSpeechRecognition();
-  recognition.lang = 'en-US'
-  recognition.continuous = false;
-  recognition.interimResults = false;
 
-  $scope.record = function(){
-    recognition.start();
-  }
+  if(!('webkitSpeechRecognition' in window)){
+    alert("speech recognition is disabled for this browser, please use chrome if you would like to use this feature");
 
-  recognition.onresult = function (event) {
-    var speech = event.results[0][0].transcript;
-    if(speech[0] == "h"){
-      speech = speech.split(" ")
-      speech.shift()
-      speech = speech.join(" ")
-      $scope.newHelp = speech
-    }
-    else if(speech[0] == "i"){
-      speech = speech.split(" ")
-      speech.shift()
-      speech = speech.join(" ")
-      $scope.newInteresting = speech
-    }
-    else if(speech[0] == "e"){
-      speech = speech.split(" ")
-      speech.shift()
-      speech = speech.join(" ")
-      $scope.newEvent = speech
-    }
-    else{
-      alert("I did not get that")
+  }else{
+
+    var recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US'
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    $scope.record = function(){
+      recognition.start();
     }
 
+    recognition.onresult = function (event) {
+      var speech = event.results[0][0].transcript;
+      if(speech[0] == "h"){
+        speech = speech.split(" ")
+        speech.shift()
+        speech = speech.join(" ")
+        $scope.newHelp = speech
+      }
+      else if(speech[0] == "i"){
+        speech = speech.split(" ")
+        speech.shift()
+        speech = speech.join(" ")
+        $scope.newInteresting = speech
+      }
+      else if(speech[0] == "e"){
+        speech = speech.split(" ")
+        speech.shift()
+        speech = speech.join(" ")
+        $scope.newEvent = speech
+      }
+      else{
+        alert("I did not get that")
+      }
+
+    }
   }
 
   //Socket fucntionality
