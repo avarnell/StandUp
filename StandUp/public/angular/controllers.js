@@ -52,7 +52,7 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
   function getItem(key) {
     return localStorageService.get(key);
   }
-  $scope.audioEnabled = true
+  
   var user = getItem('user')
 
   if(user == null){
@@ -100,6 +100,7 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
     return localStorageService.get(key);
   }
   var user = getItem('user')
+  $scope.audioEnabled = true;
 
   if(user == null){
     authFailed.setauthFailed()
