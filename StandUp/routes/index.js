@@ -28,7 +28,7 @@ router.post('/create', headerCheck, function(req,res,next){
         standup: {helps : [], interestings: [], events: []},
         isActive: true
       }).returning('id').then(function(standData){
-        var joinString = 'A new standUP has been created. Join ' + req.body.name + ' at http://b832a90c.ngrok.io/ and sign in!'
+        var joinString = 'A new standUP has been created. Join ' + req.body.name + ' at http://www.andrewvarnell.xyz/ and sign in!'
         request.get('https://slack.com/api/chat.postMessage?token='+ req.body.user.token + '&channel=%23' + channel_name + '&text=' + joinString)
         res.json({id: standData[0]})
       })

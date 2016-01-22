@@ -110,7 +110,7 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
   //Socket Logic
 
   mySocket.connect()
-  mySocket.on('connect', function(){
+//  mySocket.on('connect', function(){
     mySocket.emit('join room', room)
     $http.get('/sync/' + room).then(function(data){
       $scope.team = data.data.standup.team
@@ -121,7 +121,7 @@ var standUP = angular.module('standUP', ['chart.js',"ngRoute", 'btford.socket-io
       $scope.ended = !data.data.standup.isActive
 
     })
-  })
+ // })
 
   $scope.addHelp = function(){
     mySocket.emit('help', $scope.newHelp, name, profilePic)

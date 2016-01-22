@@ -4,7 +4,11 @@ module.exports = {
 
   development: {
     client: 'postgresql',
-    connection: 'postgres://localhost/standup-development',
+    connection:{
+	database: 'standup-development',
+   	user: 'avarnell',
+	password: '<newpassword>'
+	 },
     pool: {
       min: 1,
       max: 1

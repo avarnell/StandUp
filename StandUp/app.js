@@ -22,6 +22,7 @@ passport.use(new SlackStrategy({
   scope : 'users:read,team:read,channels:read,chat:write:bot',
   redirect_uri : '/'
 }, function(accessToken, refreshToken, profile, done) {
+	console.log('hit')
   var payload = {
     slackToken : accessToken,
     name : profile._json.user,
