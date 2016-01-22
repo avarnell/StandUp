@@ -172,6 +172,7 @@ io.on('connection', function(socket){
      if(currentRoom != 'demo'){
       knex('standUPs').where({id : room}).then(function(response){
         if(response[0].isActive){
+          console.log('hit')
           socket.join(currentRoom)
         }
       })
