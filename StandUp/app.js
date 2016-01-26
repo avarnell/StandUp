@@ -73,7 +73,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
-
+//app.use('/favicon.ico', express.static('images/favicon.ico'));
 
 //slash command intigration
 app.post('/incoming', function(req,res,next){
